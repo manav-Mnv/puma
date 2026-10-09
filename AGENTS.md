@@ -1,4 +1,4 @@
-﻿# AGENTS.md: Puma (EDGE). Same rules as CLAUDE.md, for Cursor, Codex and other agents
+﻿# AGENTS.md: Puma (HADGE). Same rules as CLAUDE.md, for Cursor, Codex and other agents
 
 A Luma-style campus event platform for **Parul University**. One Expo codebase targets iOS, Android and Web. The backend is Supabase. The budget is ₹0/month.
 

@@ -1,4 +1,8 @@
-# Party A reviews everything. Add Party B's GitHub handle to /app and /src once known.
-*                     @manav-Mnv
-/supabase/            @manav-Mnv
-/.github/             @manav-Mnv
+# Party A: core backend. Party B: frontend + DevOps. Replace @PARTY_B with their GitHub handle.
+*                       @manav-Mnv
+/supabase/migrations/   @manav-Mnv
+/supabase/tests/        @manav-Mnv
+# /supabase/functions/  @PARTY_B
+# /.github/             @PARTY_B
+# /app/                 @PARTY_B
+# /src/components/      @PARTY_B

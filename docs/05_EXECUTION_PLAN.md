@@ -1,66 +1,74 @@
-# 10-Day Execution Plan: Party A / Party B
+# 10-Day Execution Plan: Party A / Party B (v3.1)
 
-**Rule #1:** R1 (golden path) must be done and verified before any R2 work starts.
+**Rule #1:** R1 (golden path, **website + Android APK**) must be done and verified before any R2 work starts.
 **Rule #2:** Every task has a lane (A or B), an ID, and acceptance criteria, and lives in `logs/TASKS.md`.
 **Rule #3:** If Party B misses a checkpoint, Party A takes the B-lane using the cut-list. This is planned, not a crisis.
 
+**Platform priority:** 1) Website, 2) Android (APK → Play Store), 3) iPhone App Store later from the same code.
+
 ## Who does what
 
-| | **Party A: Manav (Lead / Backend / DevOps / Agent Manager)** | **Party B: Co-developer (Frontend / UI / Design-to-code)** |
+| | **Party A: Manav (Lead · Core Backend · Agent Manager)** | **Party B: Co-developer (Frontend owner · DevOps · Backend services)** |
 |---|---|---|
-| Owns | Supabase schema, RLS, RPCs, auth, edge functions, certificates logic, CI/CD, releases, `logs/`, merging PRs | Expo screens, UI kit, navigation, forms, QR scanner UI, certificate layout, PWA polish, accessibility |
-| Interface contract | Publishes **typed hooks** in `src/lib/api/*` (e.g. `useEvents()`, `useRegister()`, `checkInByTicket()`) with mock data on Day 1 | Builds screens **against those hooks/mocks only**, never calling Supabase directly |
-| Reviews | All B PRs (as code owner) | A's UI-facing PRs (optional) |
+| **Backend** | Core data and security: schema + migrations, **RLS**, **auth (both student paths)**, student-ID validation, all business RPCs (register, check-in A/B, complete, certificates, approvals, link Parul email), audit log | **Backend services:** Edge Functions for **push sending**, **CSV export**, **event reminders (cron)**, **notification triggers**. **Seed data** (institutes, courses, departments). Storage buckets + policies for avatars/covers. |
+| **Frontend** | Auth + onboarding screens only (tightly coupled to the two identity paths) | **Owns the frontend and decides how it's built:** UI kit, design system, navigation, every other screen, QR scanner UI, certificate layout, PWA, accessibility |
+| **DevOps** | Reviews and approves prod actions | **Owns DevOps:** GitHub Actions CI/CD, Cloudflare Pages, Supabase CLI deploys, EAS Build/Update, **Play Store listing + release**, keep-alive + backup jobs, Sentry, k6 load test, runbook |
+| **Process** | Architecture, ADRs, task board, PR reviews (code owner of `supabase/migrations`), agent pipeline | PR reviews of A's UI-facing changes, code owner of `.github/`, `app/`, `src/components/` |
+| **Interface contract** | Publishes **typed hooks** in `src/lib/api/*` with mocks on Day 1, and the DB schema as generated TypeScript types | Builds screens against those hooks/mocks only. Edge functions use only documented tables/RPCs. |
 
-Because B codes against mocks, **A can swap in the real backend, or take over B's screens, without anything breaking.**
+Because B codes against mocks and owns separate folders, **A can take over any B-lane piece without anything breaking.**
 
-## Day 0: setup (today, ~3 h, both)
+## Day 0: setup (today, ~3 h)
 | ID | Lane | Task | Done when |
 |---|---|---|---|
-| D0-1 | A | Re-verify pricing (checklist in `02_FACT_CHECK.md` §4). **Confirm the student email domain.** | Logged in DECISIONS |
-| D0-2 | A | Create Supabase project (Mumbai/Singapore region), GitHub secrets, Cloudflare Pages, Expo account, Sentry | Keys in GitHub secrets, `.env.example` committed |
+| D0-1 | A | ~~Confirm email domain~~ ✅ `paruluniversity.ac.in`. Confirm **faculty** use the same domain. Re-verify pricing (`02_FACT_CHECK.md` §4). | Logged in DECISIONS |
+| D0-2 | **B** | Create accounts: Supabase project (Mumbai region), Cloudflare Pages, Expo/EAS, Sentry. Add GitHub secrets. `.env.example`. | Secrets in GitHub, A has admin access to every account |
 | D0-3 | A | Add B as repo collaborator. Branch protection on `main` (PR + CI required). | B can open a PR |
-| D0-4 | B | Confirm the Figma design system. Pick NativeWind vs Tamagui (ADR-002). Pick a light glass style. | ADR written |
+| D0-4 | B | Confirm the Figma design system. Pick NativeWind vs Tamagui (ADR-002). Light glass style. | ADR written |
 | D0-5 | both | Each sets up an AI assistant with their system prompt (`06_SYSTEM_PROMPTS.md`) | Sanity prompt run |
+| D0-6 | A | Ask the sponsor to pay the **Google Play $25** fee (needed by Day 7) | Sponsor confirmed |
 
 ## Release R1: Golden Path (Days 1–6)
 
 | Day | Party A | Party B | Checkpoint |
 |---|---|---|---|
-| **1** | Expo app scaffold (Router, TS, lint, Jest), CI skeleton, migrations: profiles/departments/institutes/allowed domains + GRANTs + RLS, domain trigger. **Mock API hooks published.** | UI kit (Button, Input, Card, Badge, Avatar, Screen, Toast), theme tokens from Figma, tab layout (Explore / Tickets / Create / Profile) | Scaffold builds on web + Android |
-| **2** | Auth (Google + email), sign-in errors, onboarding RPC, consent, RLS tests | Sign-in screen, 3-step onboarding UI (seeded institute list), profile screen | 🔶 **Checkpoint B1:** has B merged ≥ 1 real screen PR? If not → solo mode warning |
-| **3** | `events` + `registrations` tables, RLS, `register_for_event`, create-event API, audit triggers | Explore feed (search, filter), event detail, create-event form, Verified badge | A user can create → see → register (web) |
-| **4** | `ticket_code`, `check_in_by_ticket`, event window rules, roster views, CSV export | My Tickets + QR (offline cache), scanner screen (`expo-camera`) with ✅/⚠️ states and haptics | Scan works phone → phone |
-| **5** | `complete_event` + certificate issue, `verify_certificate`, keep-alive + backup Actions | Certificate design (HTML template → PDF), certificate list, public `/verify/[serial]` page | 🔶 **Checkpoint B2:** are B's R1 screens ≥ 70% merged? If not → **solo mode ON** |
-| **6** | E2E (Playwright) golden path, bug bash, deploy web prod + Android APK | Polish, empty/loading/error states, accessibility pass | ✅ **R1 exit:** a real student completes the loop on web + Android |
+| **1** | Expo app scaffold (Router, TS, lint, Jest). Migrations: profiles (all fields), departments, institutes, allowed domains + GRANTs + RLS. Sign-up trigger (Path A Verified / Path B Unverified). **Mock API hooks + generated types published.** | **CI pipeline** (typecheck, lint, test, `supabase db reset` + tests). UI kit + theme tokens + tab layout (Explore / Tickets / Create / Profile). **Seed** institutes/courses/departments. | Scaffold builds on web + Android, CI green |
+| **2** | Auth (Google + email/password) for both paths, student-ID validation + uniqueness, `complete_onboarding`, consent, RLS tests. **Sign-in + 3-step onboarding screens.** | **Web deploy pipeline** (Cloudflare Pages previews per PR + prod). Profile screen, Explore skeleton. | 🔶 **Checkpoint B1:** CI + web preview live, and ≥ 1 real screen merged? If not → solo warning |
+| **3** | `events` + `registrations`, RLS, `register_for_event` (requires onboarding), create-event RPC, audit triggers | Explore feed (search, filter), event detail, create-event form, Verified badge. **EAS build profile** (Android APK). | A user can create → see → register (web) |
+| **4** | `ticket_code`, `check_in_by_ticket`, event window rules, roster views (basic/full) | My Tickets + QR (offline cache), scanner screen (✅ / ⚠️ already / Unverified tag), **CSV export Edge Function** + download button | Scan works phone → phone |
+| **5** | `complete_event` + certificate issue, `verify_certificate` | Certificate design (HTML → PDF), certificate list, public `/verify/[serial]` page. **Keep-alive + weekly backup Actions.** | 🔶 **Checkpoint B2:** are B's R1 items ≥ 70% merged? If not → **solo mode ON** |
+| **6** | Playwright golden path for **both** student paths, RLS/security bug bash | Polish (empty/loading/error states), accessibility. **Release: website prod + Android APK link.** Sentry wired. | ✅ **R1 exit:** a Parul-email student and an ID-only student each complete the loop on the website + Android |
 
 ## Release R2: Pilot (Days 7–10)
 
 | Day | Party A | Party B | Checkpoint |
 |---|---|---|---|
-| **7** | clubs, club_members, `decide_request`, Club Lead event → pending, overdue cron | Club pages, request-club form, AD approval queue UI, status chips | AD approves a Club Lead event |
-| **8** | `self_check_in` + `checkin_code`, **k6 load test (1,000 / 60 s)**, notifications table + push edge function | Mode B "screen display" page (big QR, live counter via Realtime), student self-scan flow, inbox screen, push permission UX | k6 p95 < 1.5 s |
-| **9** | Security review (RLS attempts per role), Sentry, backup restore drill, EAS production builds | PWA manifest + iPhone install guide, web push, final UI polish, store screenshots | Release candidate tagged `v0.9.0` |
-| **10** | Release: web prod, APK link, EAS Update, runbook, onboard the Swift Coding Club organizer | Demo walkthrough, quick user guide (1 page), feedback form link | ✅ **R2 exit:** a real club event end to end |
+| **7** | clubs, club_members, `decide_request`, Club Lead event → pending, overdue cron | Club pages, request-club form, AD approval queue UI, status chips. **Play Console: listing, privacy policy URL, internal testing track upload.** | AD approves a Club Lead event, app is on Play internal testing |
+| **8** | `self_check_in` + `checkin_code`, `link_parul_email` flow (T17) | Mode B "screen display" page (big QR, live counter), self-scan flow, inbox. **Push Edge Function + reminder cron.** **k6 load test (1,000 / 60 s).** | k6 p95 < 1.5 s |
+| **9** | Security review (RLS escape attempts per role, ID-squatting cases), backup restore drill | PWA manifest + install guide, web push, final polish, **Play Store screenshots + production submission** | Release candidate `v0.9.0` |
+| **10** | Onboard the Swift Coding Club organizer, monitor live, hotfixes | Release: web prod, EAS Update, runbook, 1-page user guide, feedback link | ✅ **R2 exit:** a real club event end to end |
+
+## After Day 10 (R3): iPhone first
+Apple Developer enrollment (sponsor pays) → `eas build -p ios` from the **same codebase** → TestFlight → App Store review. Expect about a week, mostly Apple review and account verification. Then the R3 backlog in the PRD.
 
 ## Solo mode (Party B didn't contribute)
 
-Party A follows the same plan with agents doing B-lane work, **but cuts**:
+Party A follows the same plan with agents doing the B-lane work (`frontend-dev` + `release-manager` agents), **but cuts**:
 
 | Keep (must) | Cut to R3 |
 |---|---|
-| Auth + onboarding, events, register, ticket, Mode A scan, complete, certificate + verify, CSV | Clubs + approval flow (Faculty/AD events only) |
-| Web + Android APK + iPhone PWA | Mode B (use Mode A with 2–3 scanners instead) |
-| Keep-alive, backups, CI | Push (in-app inbox only) |
-| Basic UI kit (stock NativeWind components) | Custom glass design, animations |
+| Both sign-up paths, full profile, events, register, ticket, Mode A scan, complete, certificate + verify, CSV | Clubs + approval flow (Faculty/AD events only) |
+| Website + Android APK | Play Store submission (APK link only), Mode B (use Mode A with 2–3 scanners) |
+| CI (one workflow) + web deploy + keep-alive + backup | Push (in-app inbox only), k6, Sentry |
+| Stock UI kit | Custom glass design, animations |
 
-If B joins later, they take R3 items from `logs/TASKS.md` in the B-lane with no rework.
+If B joins later, they pick up items from `logs/TASKS.md` in the B-lane with no rework.
 
 ## Branching and git workflow
-- `main` is protected and always deployable. `dev` is optional (skip it for 2 people).
-- Branch names: `feat/T05-register`, `fix/…`, `chore/…`, `docs/…`. **The task ID is always in the name.**
+- `main` is protected and always deployable.
+- Branch names: `feat/T05-register`, `fix/…`, `chore/…`, `ci/…`, `docs/…`. **The task ID is always in the name.**
 - Commits follow Conventional Commits: `feat(events): register RPC (T05)`.
-- Small PRs (< 400 lines) using the PR template checklist. CI green + 1 approval (or the manager agent's review in solo mode) before merging.
+- Small PRs (< 400 lines) using the PR template. CI green + 1 approval from the other party (or the manager agent in solo mode).
 - Tags: `v0.1.0` R1, `v0.9.0` RC, `v1.0.0` pilot.
 
 ## Daily rhythm (15 min)

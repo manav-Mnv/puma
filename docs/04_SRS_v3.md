@@ -1,9 +1,9 @@
-# Puma (EDGE): Software Requirements Specification v3.0
+# Puma (HADGE): Software Requirements Specification v3.0
 
 | Field | Value |
 |---|---|
-| Version | **3.0, final baseline for the 10-day MVP** |
-| Supersedes | SRS v2.0 (`docs/archive/`) |
+| Version | **3.1, final baseline for the 10-day MVP** (v3.1: two student identity paths in the MVP, all profile fields required, website + Android first) |
+| Supersedes | SRS v3.0, SRS v2.0 (`docs/archive/`) |
 | Product doc | `03_PRD_v3.md` |
 | Rule | Items marked **🔒 LOCKED** change only through a new entry in `logs/DECISIONS.md` (an ADR) |
 
@@ -64,7 +64,7 @@ puma/
 
 | Table | Key columns | Notes |
 |---|---|---|
-| `profiles` | `id (=auth.uid)`, `full_name`, `email`, `enrollment_no`, `institute_id`, `course`, `year`, `phone`, `personal_email`, `role` enum, `department_id`, `verification_status`, `consent_at`, `push_tokens jsonb` | A row is created by a trigger on sign-up |
+| `profiles` | `id (=auth.uid)`, `full_name`, `parul_email` (nullable, unique), `personal_email`, `student_id` (**unique**, uppercase, format-checked), `institute_id`, `course`, `year`, `semester`, `phone`, `gender` (incl. `prefer_not_to_say`), `residence` (hosteller/day_scholar), `role` enum, `department_id`, `verification_status` (verified/unverified), `consent_at`, `onboarded_at`, `push_tokens jsonb` | A row is created by a trigger on sign-up. `onboarded_at` can only be set when every required field is non-null (CHECK constraint / RPC). |
 | `departments` | `id`, `name`, `institute_id` | Seeded |
 | `institutes` | `id`, `name` | Seeded subset + "Other" |
 | `allowed_email_domains` | `domain` | Config table, so domains change without a deploy |
@@ -82,12 +82,17 @@ puma/
 ---
 
 ## 3. Authentication and identity 🔒
-- **AUTH-1:** Google OAuth (with `hd` hint = Parul domain) and email/password with email confirmation.
-- **AUTH-2:** A `before insert` trigger on `auth.users` (or the Supabase auth hook) rejects any email whose domain isn't in `allowed_email_domains`. **Fail closed.** The client maps the error to "Use your Parul University email (…@<domain>)."
-- **AUTH-3:** A profile is created automatically with `role='student'`, `verification_status='verified'`.
-- **AUTH-4:** Roles are raised only by an Admin/AD through the `set_role()` RPC (writes to the audit log). Super Admin is seeded by SQL.
-- **AUTH-5:** Onboarding is required until `profiles.onboarded_at` is set. The consent checkbox stores `consent_at`.
-- **AUTH-6 (R3):** Path B, temporary UG-number signup with `verification_status='unverified'`.
+Confirmed Parul domain: **`paruluniversity.ac.in`**, stored in `allowed_email_domains` (config, no hard-coding).
+
+- **AUTH-1:** Sign-in methods are **Google OAuth** and **email + password** (with email confirmation). Both paths use the same methods.
+- **AUTH-2 (Path A, Parul email):** if the sign-in email's domain is in `allowed_email_domains`, the sign-up trigger creates the profile with `parul_email = email` and `verification_status = 'verified'`.
+- **AUTH-3 (Path B, student ID only):** any other email is accepted as a **personal email** and the profile is created with `verification_status = 'unverified'`. The user **cannot register for events until onboarding is complete**, and onboarding requires a valid `student_id`.
+- **AUTH-4 (student ID rules):** normalised to uppercase with spaces removed. Must match `^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$` (e.g. `25UG030303`; PG and other codes are allowed). `UNIQUE` across all profiles. The year prefix must be ≤ the current year. On a duplicate, show "This ID is already registered. Contact support." The UI shows a confirmation step before submit.
+- **AUTH-5 (link Parul email):** an unverified user can call `link_parul_email(email)`. Supabase sends a confirmation to that address (email change, or `linkIdentity` for Google). Once it's confirmed **and** the domain is allowed, a trigger sets `parul_email` and `verification_status='verified'` and writes to the audit log. If the Parul email already belongs to another account, the link is refused and the user is told to contact an admin (no auto-merge in the MVP).
+- **AUTH-6 (staff):** `set_role()` refuses Faculty/AD/Admin roles for any profile without a verified `parul_email`.
+- **AUTH-7:** Roles are raised only by Admin/AD through the `set_role()` RPC (audited). Super Admin is seeded by SQL.
+- **AUTH-8 (onboarding):** `complete_onboarding(payload)` validates every required field (name, student ID, institute, course, year, semester, phone (Indian 10-digit), gender, residence, personal email, consent) and sets `onboarded_at`. `register_for_event` refuses users without `onboarded_at`.
+- **AUTH-9 (abuse controls):** organizers and CSVs always show the Verified/Unverified tag. Admin can clear a disputed `student_id` (audited). Rate-limit sign-ups using Supabase Auth's built-in limits plus CAPTCHA only if abuse appears (R3).
 
 ## 4. Authorization (RLS) 🔒
 | Table | Student | Club Lead | Faculty | AD | Admin+ |
@@ -100,7 +105,7 @@ puma/
 | certificates | R own · public verify via RPC by serial | ✗ | ✗ | R dept | all |
 | clubs | R approved | CRUD own pending | R | approve dept | all |
 
-Field-level privacy (no phone for Club Lead) is done with **security-definer views** (`event_roster_basic` vs `event_roster_full`) rather than column RLS.
+Field-level privacy (no phone, gender or personal email for Club Lead) is done with **security-definer views** (`event_roster_basic` vs `event_roster_full`) rather than column RLS.
 
 ## 5. Business functions (RPC) 🔒
 | RPC | Who | Behavior |
@@ -155,6 +160,8 @@ Field-level privacy (no phone for Club Lead) is done with **security-definer vie
 | Complete pressed twice | Idempotent. No duplicate certificates (UNIQUE attendance_id). |
 | Student not registered scans the Mode B QR | Walk-in allowed? → auto-register + check-in. Otherwise "Register first", with a register button. |
 | Screen QR photo shared on WhatsApp | MVP: the organizer regenerates the code. R3: rotating code + suspicious-activity flag. |
+| ID-only student later gets a Parul email | `link_parul_email` → Verified, same account, history kept (AUTH-5) |
+| Two people claim the same student ID | Second sign-up blocked. Admin resolves it and the reset is audited. |
 | Name misspelled after a certificate was issued | Profile edit → certificate `snapshot` re-rendered on the next view, `reissue_reason='profile_update'` (R3) |
 | AD deactivated with a pending queue | The queue is visible to Admin (dept filter). Formal reassignment comes in R3. |
 | Supabase paused | Keep-alive prevents it. Runbook: unpause from the dashboard, cron jobs resume. |
@@ -162,8 +169,8 @@ Field-level privacy (no phone for Club Lead) is done with **security-definer vie
 ## 10. Traceability (MVP)
 | ID | Requirement | PRD story | Release | Built | Tested | Verified by manager |
 |---|---|---|---|---|---|---|
-| T01 | Domain-restricted sign-in | S1 | R1 | ☐ | ☐ | ☐ |
-| T02 | Onboarding + consent | S2 | R1 | ☐ | ☐ | ☐ |
+| T01 | Sign-in: Path A (Parul email → Verified) + Path B (personal email + student ID → Unverified) | S1, S1b | R1 | ☐ | ☐ | ☐ |
+| T02 | Full required profile (3 screens) + consent + ID validation | S2 | R1 | ☐ | ☐ | ☐ |
 | T03 | RLS baseline + CI RLS check | n/a | R1 | ☐ | ☐ | ☐ |
 | T04 | Create event (Faculty/AD, verified) | S9 | R1 | ☐ | ☐ | ☐ |
 | T05 | Browse/search + register | S3 | R1 | ☐ | ☐ | ☐ |
@@ -176,5 +183,6 @@ Field-level privacy (no phone for Club Lead) is done with **security-definer vie
 | T12 | AD approval queue | S11 | R2 | ☐ | ☐ | ☐ |
 | T13 | Mode B self check-in + k6 pass | S6 | R2 | ☐ | ☐ | ☐ |
 | T14 | Push + inbox | n/a | R2 | ☐ | ☐ | ☐ |
-| T15 | PWA install (iPhone) + Android APK | n/a | R2 | ☐ | ☐ | ☐ |
+| T15 | Play Store submission (internal → production) + PWA install guide | n/a | R2 |
+| T17 | Link Parul email → Verified | S1c | R2 | ☐ | ☐ | ☐ |
 | T16 | Keep-alive + backup jobs | NFR-6/7 | R1 | ☐ | ☐ | ☐ |

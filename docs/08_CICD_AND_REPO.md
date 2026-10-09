@@ -1,13 +1,13 @@
 # CI/CD, Environments and Repo Standards
 
-The workflow YAML gets written on **Day 1** (task D0-2/T03, owned by `release-manager`). This doc is the spec that work follows.
+The workflow YAML gets written on **Day 1** (tasks D0-2/T03b). **Owner: Party B** (DevOps lane), or the `release-manager` agent in solo mode. This doc is the spec that work follows.
 
 ## Environments
 | Env | Supabase | Web | Mobile | Trigger |
 |---|---|---|---|---|
 | **local** | `supabase start` (Docker) | `npx expo start --web` | Expo Go / dev build | developer |
 | **preview** | local DB inside CI (ephemeral) | Cloudflare Pages preview URL per PR | EAS Update channel `preview` | every PR |
-| **production** | Supabase cloud project (free) | Cloudflare Pages prod | EAS Update channel `production` + APK | merge to `main` (+ manual approval for DB) |
+| **production** | Supabase cloud project (free, Mumbai region) | Cloudflare Pages prod | EAS Update channel `production` + APK | merge to `main` (+ manual approval for DB) |
 
 > With only 2 free Supabase projects, use **prod + a local DB in CI** rather than a cloud staging project. Keep the second free slot for an emergency restore.
 

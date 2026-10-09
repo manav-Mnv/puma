@@ -19,7 +19,7 @@ The agent definitions are in `.claude/agents/*.md`, and Claude Code loads them a
 | `debugger` | `.claude/agents/debugger.md` | SRE / debugger. Reproduces, finds the root cause, makes the minimal fix. | ✅ | ❌ (serial) |
 | `security-reviewer` | `.claude/agents/security-reviewer.md` | AppSec. RLS escape attempts, secrets, auth. | ❌ read + run | ✅ with QA |
 | `code-reviewer` | `.claude/agents/code-reviewer.md` | Senior reviewer. Correctness, simplicity, conventions. | ❌ | ✅ with QA |
-| `release-manager` | `.claude/agents/release-manager.md` | DevOps. CI, deploys, tags, runbook. | CI/config | ❌ |
+| `release-manager` | `.claude/agents/release-manager.md` | DevOps. CI, deploys, tags, runbook. **Party B owns this lane; Party A uses the agent in solo mode.** | CI/config | ❌ |
 
 > Claude Code subagents can't spawn other subagents, so **the main session is always the Manager**. You talk to the Manager. The Manager talks to the agents.
 
