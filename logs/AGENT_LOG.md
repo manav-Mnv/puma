@@ -19,3 +19,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Left off at:** Day 0 not started
 - **Next:** Day 0 setup (logs/HANDOFF.md)
 - **Manager verdict:** pending review by Party A
+
+### [2026-10-10] planner (Claude) · DOC 09 · Setup guide added + fact-checked
+- **Status:** DONE
+- **Did:** Added docs/09_SETUP_GUIDE.md from Party A's draft with 3 corrections (Supabase CLI install, GitHub private-repo protection needs Pro, Play 12-tester/14-day rule). Updated docs/03, 05, 08, TASKS, DECISIONS (ADR-008), README, HANDOFF.
+- **Evidence:** sources at the end of docs/09
+- **Next:** Day 0 setup per docs/09
+- **Manager verdict:** pending review by Party A

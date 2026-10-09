@@ -7,6 +7,7 @@
 - Agent definitions are in `.claude/agents/`. No app code yet.
 
 ## Next (in order)
+0. **Both: follow `docs/09_SETUP_GUIDE.md`** (accounts, software, secrets). Party A: apply for the GitHub Student Developer Pack and create the Play Console account today.
 1. Party A: D0-1. Confirm **faculty** also use `@paruluniversity.ac.in`. Re-check pricing.
 2. Party A: D0-3 (add B, branch protection) + D0-6 (Play Store $25 sponsor).
 3. Party B: D0-2 (accounts + secrets) + D0-4 (Figma + ADR-002).

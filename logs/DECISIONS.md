@@ -8,6 +8,7 @@
 | ADR-004 | 2026-10-10 | Student domain **paruluniversity.ac.in**. **Two identity paths in the MVP:** Parul email → Verified; personal email/Google + student ID (`^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$`, UG/PG/other, unique) → Unverified until a Parul email is linked. Replaces the "fail closed / domain-only" rule from ADR-001. | Accepted |
 | ADR-005 | 2026-10-10 | All profile fields required before registering (ID, institute, course, year/sem, phone, gender incl. "prefer not to say", residence, personal email, consent) | Accepted |
 | ADR-006 | 2026-10-10 | Platform order: website → Android/Play Store → iPhone App Store (R3, sponsor pays Apple). Framework locked: Expo, one codebase. | Accepted |
+| ADR-008 | 2026-10-10 | Setup facts: Supabase CLI per project (`npx supabase`), not a global npm install. Private repo → get GitHub Pro via the Student Pack (or go public) for branch protection. The prod DB deploy is a manual `workflow_dispatch` that only Party A can run (no Environment reviewers on our plan). Play personal account → closed test 12+ testers × 14 days → public ≈ Day 20. | Accepted |
 | ADR-007 | 2026-10-10 | Lane split: Party B = frontend owner + DevOps + backend services (Edge Functions, seeds, storage). Party A = core schema/RLS/auth/RPCs + agent manager. | Accepted |
 
 ---

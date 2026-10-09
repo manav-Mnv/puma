@@ -15,18 +15,19 @@ The workflow YAML gets written on **Day 1** (tasks D0-2/T03b). **Owner: Party B*
 | Workflow | Trigger | Steps |
 |---|---|---|
 | `ci.yml` | PR, push | install (cached) → typecheck → lint → unit tests → `supabase start` + `db reset` + **RLS/RPC tests** → RLS-enabled check → web export build → Playwright smoke |
-| `deploy.yml` | push to `main` | gate: CI green → `supabase db push` (environment `production`, **required reviewer = Party A**) → Cloudflare Pages deploy → `eas update --channel production` → smoke against the prod URL |
+| `deploy.yml` | push to `main` | gate: CI green → Cloudflare Pages deploy → `eas update --channel production` → smoke against the prod URL |
+| `db-deploy.yml` | **manual only** (`workflow_dispatch`), runs only if `github.actor == 'manav-Mnv'` | backup → `supabase db push` to prod → RLS smoke. This replaces Environment "required reviewers", which aren't available for private repos on our plan (see docs/09 Part 7). |
 | `mobile-build.yml` | tag `v*` or manual | `eas build -p android --profile production` (APK/AAB). iOS only when Apple is funded. |
 | `keepalive.yml` | cron daily | a lightweight query to Supabase so the free project never pauses |
 | `backup.yml` | cron weekly + manual | `pg_dump` → encrypted artifact (30-day retention). Monthly restore drill into a local DB. |
 | `loadtest.yml` | manual | k6 against `self_check_in` (1,000 VUs / 60 s), with thresholds that fail the run |
 
 ## Secrets (GitHub → Settings → Secrets, never in the repo)
-`SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` (server only), `EXPO_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `SENTRY_AUTH_TOKEN`, `BACKUP_ENCRYPTION_KEY`.
+`SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, `SUPABASE_DB_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` (server only), `EXPO_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `SENTRY_AUTH_TOKEN`, `BACKUP_ENCRYPTION_KEY`.
 The client gets only `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 
 ## Repo standards
-- **Branch protection on `main`:** PR required, CI green, 1 approval (Party A is code owner), linear history, no force-push.
+- **Branch protection on `main`:** PR required, CI green, 1 approval (Party A is code owner), linear history, no force-push. ⚠️ On a private repo this needs **GitHub Pro** (free with the Student Developer Pack) or a public repo.
 - **Commits:** Conventional Commits with the task ID, e.g. `feat(checkin): idempotent check_in_by_ticket (T07)`.
 - **PRs:** use the template, under 400 lines, screenshots for UI, test output pasted.
 - **Releases:** semver tags, with release notes generated from commits.

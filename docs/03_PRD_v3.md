@@ -57,7 +57,7 @@ Parul University runs events, clubs, attendance and certificates through WhatsAp
 | Order | Platform | How | When |
 |---|---|---|---|
 | 1 | **Website** (the main experience) | Expo web build on Cloudflare Pages, installable as a PWA | R1 (Day 6) |
-| 2 | **Android app** | EAS build → APK on Day 6 → **Play Store** (internal testing → production) | APK in R1, Play Store in R2 |
+| 2 | **Android app** | EAS build → APK on Day 6 → **Play closed testing** from Day 6 (pilot installs from the Play Store) → **public Play Store ≈ Day 20** (new personal accounts need 12 testers × 14 days first) | APK + closed test in R1/R2, public listing ≈ Day 20 |
 | 3 | **iPhone app** | Same codebase → EAS iOS build → TestFlight → App Store, once Apple's $99/yr is paid | R3 (after Day 10). Until then iPhone users use the website/PWA. |
 
 ## 6. Identity: the two kinds of students
@@ -126,7 +126,7 @@ Club Leads **cannot remove members** (kept from v2). "Report to AD" comes after 
 | Release | Contents | Exit condition |
 |---|---|---|
 | **R1, Golden Path (Day 6)** | **Both sign-up paths** + full profile + consent, event create (Faculty/AD), browse, register, ticket QR, Mode A scan, mark complete, certificate + verify page, CSV export. **Website live + Android APK.** | One Parul-email student **and** one ID-only student each complete the loop on the website and Android, and RLS is proven by tests |
-| **R2, Pilot (Day 10)** | Clubs, Club Lead requests + AD approval, Mode B self check-in, push (Android + web), link-Parul-email flow, **Play Store internal → production submission**, polish + accessibility | **Swift Coding Club** runs one real event end to end with no critical bug |
+| **R2, Pilot (Day 10)** | Clubs, Club Lead requests + AD approval, Mode B self check-in, push (Android + web), link-Parul-email flow, **Play closed testing with 15–20 club testers** (public listing ≈ Day 20), polish + accessibility | **Swift Coding Club** runs one real event end to end with no critical bug |
 | **R3, Scale (after Day 10)** | **iPhone App Store build**, waitlists/capacity, invite-only, tags + recommended feed, feedback forms, admin console + flagged-account review, audit UI, Sheets sync, offline manual attendance | Campus-wide rollout |
 | **v2 (deferred)** | Payments, guests, Hubs, recurring, co-host, geofence, QR rotation, i18n Hindi/Gujarati, gamification | n/a |
 
@@ -158,7 +158,8 @@ Club Leads **cannot remove members** (kept from v2). "Report to AD" comes after 
 | D2c | ID formats | ✅ UG + PG + others: `^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$` (tighten once the college confirms program codes) |
 | D3 | Institute/Course list | ⏳ Party B to collect by Day 2 (seed a subset + "Other") |
 | D4 | Apple $99/yr | ✅ University/club will pay. iPhone app in R3. |
-| D4b | Google Play $25 one-time | ⏳ Confirm the same sponsor pays by Day 6 (needed for R2 submission) |
+| D4b | Google Play $25 one-time | ⏳ Sponsor to pay **on Day 0–1** (closed testing must start by Day 6) |
+| D9 | Private repo needs GitHub Pro for branch protection | ⏳ Apply for the free Student Developer Pack (or make the repo public) |
 | D5 | AD deactivated with a pending queue → reassign to Admin | Proposed default, R3 |
 | D6 | Glassmorphism kept light for low-end Android | Party B, Day 1 |
 | D7 | Framework | ✅ **Expo / React Native, one codebase** |
@@ -170,6 +171,6 @@ Club Leads **cannot remove members** (kept from v2). "Report to AD" comes after 
 | Someone signs up with a fake or someone else's student ID | IDs are unique; "Unverified" flag on every sheet; organizer sees the tag at scan; admin can reset an ID; linking a Parul email fixes it permanently |
 | Party B doesn't contribute | Lanes are separable. Checkpoints on Day 2 and Day 5 trigger the solo cut-list. |
 | Supabase pauses / no backups | GitHub Action keep-alive (daily) + weekly `pg_dump` |
-| Play Store review delay | Submit to internal testing on Day 7. APK link works meanwhile. |
+| Play Store 12-tester / 14-day rule (personal account) | Closed test from Day 6 with 15–20 club testers. Public listing ≈ Day 20. APK link works meanwhile. |
 | Wi-Fi dead at the venue | Ticket QR is cached. Mode A scanner queues offline (R3). |
 | 10 days is tight | Strict cut-list, AI agent pipeline, R1 locked before any R2 work |
