@@ -1,0 +1,35 @@
+# deps & builds
+node_modules/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# env & secrets
+.env
+.env.*
+!.env.example
+*.p8
+*.p12
+*.jks
+*.keystore
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+*.dump
+*.sql.gz
+
+# local AI / personal
+CLAUDE.local.md
+.claude/settings.local.json
+logs/*.local.md
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
