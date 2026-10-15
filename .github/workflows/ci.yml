@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: app (typecheck, lint, test, web build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Public values (safe in the client bundle). See docs/09 Part 7.
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test -- --ci
+      - name: Web build
+        if: env.EXPO_PUBLIC_SUPABASE_URL != ''
+        run: npm run build:web
+
+  db:
+    name: db (migrations + RLS/RPC tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Postgres and apply migrations
+        run: supabase db start
+      - name: pgTAP tests (includes "every public table has RLS")
+        run: supabase test db

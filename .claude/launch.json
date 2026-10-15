@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "edge-web-dist",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "serve@14.2.4", "-s", "dist", "-l", "8090"],
+      "port": 8090
+    }
+  ]
+}
