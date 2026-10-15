@@ -34,3 +34,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Left off at:** waiting for Party A to free a Supabase project slot
 - **Next:** see logs/HANDOFF.md
 - **Manager verdict:** pending
+
+### [2026-10-15] planner (Claude) · D0-2 · Supabase edge-prod created
+- **Status:** DONE (public part)
+- **Did:** Created `edge-prod` (ap-south-1, $0, ref zhgjmecutkdwtswrdzhc). Set 3 public GitHub secrets. Added `.env.example` + local `.env`.
+- **Evidence:** create_project → ACTIVE_HEALTHY. `gh secret list` shows 3 secrets.
+- **Next:** Party A adds the 3 private Supabase secrets (DB password, service-role, access token)
+- **Manager verdict:** pending
