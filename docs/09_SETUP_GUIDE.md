@@ -1,4 +1,4 @@
-# 09: Setup Guide: Accounts, Software & Connections (HADGE)
+# 09: Setup Guide: Accounts, Software & Connections (EDGE)
 
 Do this once, in order, ticking each box as you go. Everything is **free** except Google Play ($25 once) and Apple ($99/yr, later).
 Website menus change sometimes. If a button name is slightly different, look for the closest match.
@@ -38,8 +38,8 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 **Website:** https://supabase.com → sign in with GitHub
 
 1. **New project**
-   - Organization: create one (e.g. `hadge`)
-   - Project name: `hadge-prod`
+   - Organization: create one (e.g. `edge-parul`)
+   - Project name: `edge-prod`
    - Database password: click **Generate** and save it as `SUPABASE_DB_PASSWORD`
    - Region: **South Asia (Mumbai)**
    - Plan: **Free**
@@ -52,7 +52,7 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 4. **Access token (for CI):** click your avatar (top-right) → **Account → Access Tokens → Generate new token** → name it `github-ci` → save as `SUPABASE_ACCESS_TOKEN` (🔐)
 5. **Auth settings:** Project → **Authentication → URL Configuration**
    - Site URL: your website URL (use `http://localhost:8081` for now and update it after the Cloudflare step)
-   - Redirect URLs: add `http://localhost:8081/**`, your Cloudflare URL `https://<project>.pages.dev/**`, and `hadge://**` (for the Android app)
+   - Redirect URLs: add `http://localhost:8081/**`, your Cloudflare URL `https://<project>.pages.dev/**`, and `edgepu://**` (for the Android app)
 6. **Email sign-in:** Authentication → **Providers → Email** → make sure it's **enabled** and "Confirm email" is **on**.
    - Note: Supabase's built-in email sender is rate-limited (a few emails per hour) and is meant for testing. Before the pilot (Day 9), connect a free SMTP sender (e.g. Resend or Brevo free tier) under **Authentication → Emails → SMTP**. Most students will use Google sign-in, which sends no email.
 7. **Add Party A as admin:** Organization → **Team** → invite Party A's email as **Owner/Admin**.
@@ -65,14 +65,14 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 
 **Website:** https://console.cloud.google.com (sign in with your Google account)
 
-1. **Create project:** top-bar project picker → **New Project** → name `hadge` → Create → select it.
+1. **Create project:** top-bar project picker → **New Project** → name `edge-parul` → Create → select it.
 2. **OAuth consent screen:** menu → **APIs & Services → OAuth consent screen** (may be called "Google Auth Platform → Branding")
    - User type: **External**
-   - App name: `HADGE` · support email: yours · developer contact: yours
+   - App name: `EDGE` · support email: yours · developer contact: yours
    - Scopes: only the defaults, `email`, `profile`, `openid`
    - **Publish app** (move it from "Testing" to "In production") so any student can sign in. Basic scopes don't need Google's verification review. If you upload a logo, Google may ask for a quick brand check, so skip the logo for now.
 3. **Create credentials:** **APIs & Services → Credentials → Create credentials → OAuth client ID**
-   - Application type: **Web application** · name `hadge-supabase`
+   - Application type: **Web application** · name `edge-supabase`
    - **Authorized redirect URI:** copy it from Supabase → **Authentication → Providers → Google** (it looks like `https://<ref>.supabase.co/auth/v1/callback`) and paste it here
    - Create, then copy the **Client ID** and **Client Secret**
 4. **Paste into Supabase:** Supabase → **Authentication → Providers → Google** → enable → paste the Client ID + Client Secret → **Save**.
@@ -88,7 +88,7 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 
 1. **Account ID:** on the dashboard home, right sidebar (or **Workers & Pages** overview) → copy the **Account ID** → save as `CLOUDFLARE_ACCOUNT_ID`
 2. **API token:** avatar → **My Profile → API Tokens → Create Token** → custom token with permission **Account → Cloudflare Pages → Edit** → Create → save as `CLOUDFLARE_API_TOKEN` (🔐)
-3. **Pages project:** **Workers & Pages → Create → Pages → Direct Upload** → name it `hadge` → you'll get `https://hadge.pages.dev` (if the name is taken you'll get a variant, so note the real URL). The GitHub Action deploys to it on Day 2.
+3. **Pages project:** **Workers & Pages → Create → Pages → Direct Upload** → name it `edge-parul` → you'll get `https://edge-parul.pages.dev` (if the name is taken you'll get a variant, so note the real URL). The GitHub Action deploys to it on Day 2.
 4. Go back to **Supabase → Auth → URL Configuration** and set Site URL = your `pages.dev` URL.
 
 - [ ] Account ID + token saved · [ ] `pages.dev` URL reserved
@@ -99,7 +99,7 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 
 **Website:** https://expo.dev → sign up (free)
 
-1. Create an **organization** `hadge` (optional) and invite Party A.
+1. Create an **organization** `edge-parul` (optional) and invite Party A.
 2. **Access token:** avatar → **Account settings → Access tokens → Create** → name it `github-ci` → save as `EXPO_TOKEN` (🔐)
 3. On your laptop: `eas login` (the project itself gets linked on Day 1 with `eas init`).
 4. Push notifications: nothing to set up now. Expo Push is free, and the Android push credentials (FCM) get configured on Day 8 through `eas credentials`.
@@ -112,7 +112,7 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 
 **Website:** https://sentry.io → sign up (free Developer plan)
 
-1. Create a project → platform **React Native** → name it `hadge`
+1. Create a project → platform **React Native** → name it `edge-parul`
 2. Copy the **DSN** → save as `EXPO_PUBLIC_SENTRY_DSN` (fine to ship in the app)
 3. **Settings → Auth Tokens → Create** → save as `SENTRY_AUTH_TOKEN` (🔐)
 
@@ -179,7 +179,7 @@ Never put the service-role key or DB password in the app's `.env`.
 | **Apple Developer** | developer.apple.com/programs | $99/yr | after Day 10 | Organization enrollment needs a **D-U-N-S number** (free, takes days). Test card payment early, because some Indian cards fail. |
 
 > ⚠️ **Play Store's 12-tester rule.** A **personal** developer account created after Nov 2023 must run a **closed test with at least 12 testers opted in for 14 days in a row** before it can even apply for production. **So "live on the Play Store by Day 10" isn't possible on a personal account.**
-> **Plan:** create the account on Day 0–1. On **Day 6**, upload the first build to a **closed testing** track and invite **15–20 Swift Coding Club members** (a buffer in case some drop out). They install HADGE **from the Play Store** for the Day 10 pilot. Apply for production around **Day 20**, and a public release follows Google's review.
+> **Plan:** create the account on Day 0–1. On **Day 6**, upload the first build to a **closed testing** track and invite **15–20 Swift Coding Club members** (a buffer in case some drop out). They install EDGE **from the Play Store** for the Day 10 pilot. Apply for production around **Day 20**, and a public release follows Google's review.
 > **Or:** an **organization** account (university or club, needs a D-U-N-S number) is exempt from this rule, but getting a D-U-N-S number can take 1–2+ weeks. The APK link works for anyone in the meantime.
 
 - [ ] Play account created (sponsor paid) · [ ] Closed-test tester list (15–20 Gmail addresses) collected · [ ] Apple later

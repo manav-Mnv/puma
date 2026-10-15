@@ -1,8 +1,10 @@
-# 10-Day Execution Plan: Party A / Party B (v3.1)
+﻿# 10-Day Execution Plan: Party A / Party B (v3.1)
 
 **Rule #1:** R1 (golden path, **website + Android APK**) must be done and verified before any R2 work starts.
 **Rule #2:** Every task has a lane (A or B), an ID, and acceptance criteria, and lives in `logs/TASKS.md`.
 **Rule #3:** If Party B misses a checkpoint, Party A takes the B-lane using the cut-list. This is planned, not a crisis.
+
+**Calendar (re-baselined 2026-10-15):** Day 0 = Wed 15 Oct · Day 1 = Thu 16 Oct · **R1 (Day 6) = Tue 21 Oct** · **Pilot (Day 10) = Sat 25 Oct** · Play public ≈ Tue 4 Nov (Day 20). If Day 0 slips, shift every date by the same amount.
 
 **Platform priority:** 1) Website, 2) Android (APK → Play Store), 3) iPhone App Store later from the same code.
 

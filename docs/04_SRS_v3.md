@@ -1,4 +1,4 @@
-# Puma (HADGE): Software Requirements Specification v3.0
+# Puma (EDGE): Software Requirements Specification v3.0
 
 | Field | Value |
 |---|---|

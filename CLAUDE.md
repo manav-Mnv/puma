@@ -1,4 +1,4 @@
-# CLAUDE.md: Puma (HADGE)
+# CLAUDE.md: Puma (EDGE)
 
 A Luma-style campus event platform for **Parul University**. One Expo codebase targets iOS, Android and Web. The backend is Supabase. The budget is ₹0/month.
 

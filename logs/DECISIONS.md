@@ -1,10 +1,10 @@
-# DECISIONS (ADRs)
+﻿# DECISIONS (ADRs)
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
 | ADR-001 | 2026-10-09 | Use one Expo codebase for iOS/Android/Web, Supabase backend, an atomic RPC for check-in (no QStash), Cloudflare Pages hosting, Supabase Storage → R2 (no AWS S3), certificates rendered on demand, domain check fails closed | Accepted (pending Party A sign-off) |
 | ADR-002 | — | UI library: NativeWind vs Tamagui | Pending (Party B, Day 0) |
-| ADR-003 | 2026-10-10 | Product name **HADGE** (for now). Repo codename stays Puma. | Accepted |
+| ADR-003 | 2026-10-15 | Product name **EDGE** (corrected from "HADGE", a voice-typing error). Slugs: `edge-prod` (Supabase), `edge-parul` (Pages/Expo), app scheme `edgepu://` (`edge://` is reserved by the Microsoft Edge browser). Repo codename stays Puma. | Accepted |
 | ADR-004 | 2026-10-10 | Student domain **paruluniversity.ac.in**. **Two identity paths in the MVP:** Parul email → Verified; personal email/Google + student ID (`^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$`, UG/PG/other, unique) → Unverified until a Parul email is linked. Replaces the "fail closed / domain-only" rule from ADR-001. | Accepted |
 | ADR-005 | 2026-10-10 | All profile fields required before registering (ID, institute, course, year/sem, phone, gender incl. "prefer not to say", residence, personal email, consent) | Accepted |
 | ADR-006 | 2026-10-10 | Platform order: website → Android/Play Store → iPhone App Store (R3, sponsor pays Apple). Framework locked: Expo, one codebase. | Accepted |

@@ -1,4 +1,4 @@
-# HADGE: Product Requirements Document v3.1
+﻿# EDGE: Product Requirements Document v3.1
 
 *Every Node, Connected.* A Luma-style campus event platform for Parul University.
 
@@ -10,10 +10,10 @@
 | Technical companion | `04_SRS_v3.md` |
 | Inputs | `01_ASSUMPTIONS_AUDIT.md`, `02_FACT_CHECK.md` |
 
-> **Naming:** **HADGE** is the product name (confirmed 2026-10-10, "for now"). "Puma" stays as the repo and project codename.
+> **Naming:** **EDGE** is the product name (confirmed 2026-10-15; "HADGE" in the 2026-10-10 drafts was a voice-typing error). An edge is the link between two nodes: *Every Node, Connected.* "Puma" stays as the repo and project codename.
 
 ### Changes in v3.1 (2026-10-10, decisions from Party A)
-- Product name is **HADGE**.
+- Product name is **EDGE**.
 - Student email domain confirmed: **`@paruluniversity.ac.in`**.
 - **Both kinds of students are supported from Day 1:** those with a Parul email, and those with only a student ID (e.g. `25UG030303`). This used to be "Path B, Phase 2" and is now in the MVP.
 - Student IDs: **UG, PG and other programs** are accepted (flexible format).
@@ -152,7 +152,7 @@ Club Leads **cannot remove members** (kept from v2). "Report to AD" comes after 
 ## 13. Decisions
 | # | Decision | Status |
 |---|---|---|
-| D1 | Brand name | ✅ **HADGE** (for now) |
+| D1 | Brand name | ✅ **EDGE** (for now) |
 | D2 | Student email domain | ✅ **paruluniversity.ac.in** |
 | D2b | ID-only students | ✅ Personal email/Google + student ID, Unverified until linked |
 | D2c | ID formats | ✅ UG + PG + others: `^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$` (tighten once the college confirms program codes) |
