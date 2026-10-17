@@ -1,5 +1,7 @@
 # Puma (EDGE): *Every Node, Connected.*
 
+![Status](https://img.shields.io/badge/status-in%20development-dbab09?style=flat-square)
+
 A Luma-style event platform for **Parul University**: discover events, register in one tap, check in by QR, and receive a verified certificate automatically. It covers the **website and Android first, then iPhone**, all from one Expo codebase, on a **₹0/month** stack.
 
 > Status: **planning complete, build starts Day 1.** No application code yet.
