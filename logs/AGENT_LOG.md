@@ -41,3 +41,11 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Evidence:** create_project → ACTIVE_HEALTHY. `gh secret list` shows 3 secrets.
 - **Next:** Party A adds the 3 private Supabase secrets (DB password, service-role, access token)
 - **Manager verdict:** pending
+
+### [2026-10-15] Manager (Claude) · D0-3, T01/T02/T03/T03b/T18 · Day 1 foundation
+- **Status:** PARTIAL (in review)
+- **Did:** Repo public + `protect-main` ruleset. PR #1: Expo SDK 57 app skeleton, sign-in, identity migration, pgTAP + Jest tests, CI.
+- **Evidence:** `tsc --noEmit` exit 0 · `expo lint` clean · `jest` 6 passed · `expo export --platform web` 11 routes · browser: `/` redirects to `/sign-in`, which renders
+- **Left off at:** waiting for CI on PR #1 (pgTAP is not run locally because Docker didn't start)
+- **Next:** apply the migration to edge-prod after CI is green, then merge
+- **Manager verdict:** pending CI
