@@ -49,3 +49,11 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Left off at:** waiting for CI on PR #1 (pgTAP is not run locally because Docker didn't start)
 - **Next:** apply the migration to edge-prod after CI is green, then merge
 - **Manager verdict:** pending CI
+
+### [2026-10-31] Manager (Antigravity) · D0-2, D0-7, T01, T03, T03b · Accounts, Live Migration & Day 1 Merge
+- **Status:** DONE
+- **Did:** Added remaining private GitHub secrets (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_DB_PASSWORD`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `EXPO_TOKEN`). Connected Google OAuth. Deployed live web app to Cloudflare (`https://edge-parul.manavbarad978.workers.dev`). Applied identity migration (`20261015000001_identity.sql`) to Supabase `edge-prod`. Regenerated TypeScript types. Added `app` and `db` required status checks to `protect-main` ruleset. Verified all CI checks passed. Merged PR #2 to `main`.
+- **Evidence:** Supabase query returns `profiles`, `institutes`, `departments`, `allowed_email_domains` · CI runs `app` (1m10s pass) and `db` (2m24s pass) · PR #2 merged into `main` · web app 200 OK at live URL.
+- **Next:** Day 2: 3-step onboarding screens (T02 frontend), onboarding auth guard, and Cloudflare Pages CI/CD deploy workflow.
+- **Manager verdict:** APPROVED
+

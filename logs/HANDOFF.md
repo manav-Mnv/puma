@@ -1,19 +1,27 @@
-﻿# HANDOFF: resume point (overwrite at every stop)
+# HANDOFF: resume point (overwrite at every stop)
 
-**Updated:** 2026-10-15 · **By:** Claude (Manager) · **Phase:** Day 0 (mostly done) + Day 1 (in review)
+**Updated:** 2026-10-31 · **By:** Antigravity (Manager) · **Phase:** Day 1 COMPLETE (Merged to `main`) → Day 2 Ready
 
 ## State
-- Repo **public**. Ruleset `protect-main`: PR required (0 approvals until Party B joins, then raise it to 1), no force-push or deletion, linear history.
-- Supabase `edge-prod` (ref `zhgjmecutkdwtswrdzhc`, Mumbai). 3 public secrets in GitHub. Local `.env` set.
-- **PR #1** `feat/T01-day1-foundation`: Expo app (sign-in, session guard, tabs), identity migration (profiles + RLS + sign-up trigger for both paths + `complete_onboarding`), 20 pgTAP + 6 Jest tests, CI workflow.
-  - Local: tsc ✅, lint ✅, jest 6/6 ✅, web export ✅, browser check (sign-in renders) ✅. pgTAP runs in CI (local Docker didn't start).
-- The migration is **NOT yet applied to edge-prod**. Apply it only after the CI `db` job is green.
+- Repo **public** (`manav-Mnv/puma`). Ruleset `protect-main`: PR required (0 approvals until Party B joins), no force-push, linear history, required status checks (`app`, `db`) active.
+- Supabase `edge-prod` (ref `zhgjmecutkdwtswrdzhc`, Mumbai):
+  - Identity migration applied (`profiles`, `allowed_email_domains`, `institutes`, `departments` with full RLS, triggers, `complete_onboarding` RPC, and initial institute seed data).
+  - TypeScript types (`src/lib/api/database.types.ts`) generated directly from `edge-prod`.
+  - Google OAuth connected with authorized redirect callback.
+  - Redirect URLs configured (`http://localhost:8081/**`, `https://edge-parul.manavbarad978.workers.dev/**`, `edgepu://**`).
+- All 9 GitHub Secrets configured: `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY`, `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `EXPO_TOKEN`.
+- Web app live: deployed at `https://edge-parul.manavbarad978.workers.dev/`.
+- Local `.env` cleaned (public keys only).
+- **PR #2 MERGED to `main`**: Expo SDK 57 skeleton, sign-in screen, session guard, tabs, pgTAP + Jest tests (all passing).
 
 ## Next (in order)
-1. CI green on PR #1 → apply the migration to edge-prod (Supabase MCP `apply_migration`) → regenerate `src/lib/api/database.types.ts` → merge PR #1.
-2. Add the required status checks (`app`, `db`) to the `protect-main` ruleset.
-3. Party A (only you can do these): 3 private Supabase secrets (DB password, service-role, access token) · Google OAuth (docs/09 Part 3) · Cloudflare + Expo accounts · Party B's GitHub username · Drive: hemntomn → Viewer · Play Console + testers.
-4. Day 2: onboarding screens (3 steps) + onboarding guard, web deploy pipeline (needs Cloudflare).
+1. **Day 2 kickoff**: 3-step onboarding UI (`/onboarding`), onboarding guard (redirect users with incomplete profile), and Cloudflare automated deployment workflow (`deploy.yml`).
+2. Party A actions when ready:
+   - Provide Party B's GitHub username to add collaborator.
+   - Adjust Google Drive permissions for `hemntomn@gmail.com` (Editor → Viewer).
+   - Set up Google Play Console ($25) and collect 15–20 tester emails for the 14-day closed testing track.
 
 ## Open questions
-Faculty email domain · program codes besides UG/PG · real institute/course list (D3)
+- Faculty email domain (confirm if different from `@paruluniversity.ac.in`).
+- Other student program codes (besides UG and PG).
+- Real institute/course list for Day 3 seed data.
