@@ -65,3 +65,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Left off at:** merge blocked pending Party A review; events migration not yet on edge-prod
 - **Next:** see HANDOFF
 - **Manager verdict:** pending Party A merge
+
+### [2026-10-31] Manager (Claude) · T06, T07 · Day 4
+- **Status:** PARTIAL (in review, PR #7)
+- **Did:** attendance + check_in_by_ticket + admin_find_profiles migration, pgTAP 003, Tickets tab with offline QR, scanner screen, admin roles screen.
+- **Evidence:** tsc exit 0, lint clean, jest 22 passed, web export 15 routes
+- **Next:** Party A merges #5 → #6 → #7. Then apply migrations to edge-prod and start Day 5.
+- **Manager verdict:** pending Party A merge
