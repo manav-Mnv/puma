@@ -42,3 +42,8 @@ expo-env.d.ts
 /android
 *.pem
 npm-debug.*
+
+# playwright
+/playwright-report/
+/test-results/
+

@@ -80,6 +80,7 @@ export const strings = {
     offline: 'Offline: showing your saved tickets.',
     showAtEntry: 'Show this QR at the entrance',
     checkedIn: '✓ Checked in',
+    codeLabel: 'Ticket code',
     qrLabel: (title: string) => `Ticket QR code for ${title}`,
   },
   scan: {

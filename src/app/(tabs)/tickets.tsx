@@ -32,6 +32,10 @@ function TicketCard({ ticket }: { ticket: Ticket }) {
       <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
         {strings.tickets.showAtEntry}
       </ThemedText>
+      {/* Fallback when the organizer's camera can't scan: they type this code. */}
+      <ThemedText type="code" selectable accessibilityLabel={strings.tickets.codeLabel} testID="ticket-code">
+        {ticket.ticketCode}
+      </ThemedText>
     </ThemedView>
   );
 }

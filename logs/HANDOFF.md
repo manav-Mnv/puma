@@ -1,6 +1,6 @@
 # HANDOFF: resume point (overwrite at every stop)
 
-**Updated:** 2026-10-31 · **By:** Claude (Manager) · **Phase:** Days 2–4 merged (#7); fix #8 and Day 5 in review
+**Updated:** 2026-10-31 · **By:** Claude (Manager) · **Phase:** Day 6 in progress (E2E PR open)
 
 ## State
 - `main` has Days 1–4: onboarding, events, register, tickets (offline QR), Mode A scanner, admin roles, workflows (deploy/keepalive/backup/mobile-build). PRs #5 and #6 were closed because they landed via #7.
@@ -18,3 +18,10 @@
 
 ## Open questions
 Real institute/course list. Program codes beyond UG/PG.
+
+## Day 6 status (2026-10-31)
+- Live: website deployed (Wrangler 4 + new Workers token), edge-prod has all 4 migrations (identity, events, checkin, certificates). Days 1–5 are on main.
+- Open: branch `feat/T19-e2e-r1`. Playwright golden-path E2E (`e2e/golden-path.spec.ts`) plus a CI `e2e` job against local Supabase. Ticket code is shown under the QR as the manual-scan fallback. **Not yet green in CI. Iterate on failures** (selectors, `supabase status` env names).
+- Left for Day 6: fix the E2E until it's green, bump actions to v5 (Node 20 deprecation), set `preview_urls: false` in wrangler.jsonc, accessibility pass, tag `v0.1.0`.
+- Known gap: faculty go through the student onboarding (student ID required). Faculty/AD onboarding (MIS ID, designation) is still to do.
+- Party A: enable leaked-password protection if your plan allows it. Regenerate `database.types.ts` from edge-prod (the hand-written one matches for now).
