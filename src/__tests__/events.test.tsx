@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import CreateScreen from '@/app/(tabs)/create';
-import EventDetailScreen from '@/app/event/[id]';
+import EventDetailScreen from '@/app/event/[id]/index';
 
 const mockCreate = jest.fn();
 const mockRegister = jest.fn();
@@ -35,7 +35,13 @@ jest.mock('@/lib/api/events', () => ({
   useCancelRegistration: () => ({ mutate: jest.fn(), isPending: false, error: null }),
 }));
 
+let mockIsOrganizer = false;
+jest.mock('@/lib/api/tickets', () => ({
+  useIsEventOrganizer: () => ({ data: mockIsOrganizer }),
+}));
+
 beforeEach(() => {
+  mockIsOrganizer = false;
   mockCreate.mockClear();
   mockRegister.mockClear();
   mockCanCreate = true;
@@ -80,6 +86,14 @@ describe('EventDetailScreen', () => {
     expect(screen.getByText('3 going')).toBeTruthy();
     await fireEvent.press(screen.getByRole('button', { name: 'Register' }));
     expect(mockRegister).toHaveBeenCalledWith('evt-1');
+  });
+
+  it('shows "Scan tickets" only to the organizer', async () => {
+    await render(<EventDetailScreen />);
+    expect(screen.queryByRole('button', { name: 'Scan tickets' })).toBeNull();
+    mockIsOrganizer = true;
+    await render(<EventDetailScreen />);
+    expect(screen.getByRole('button', { name: 'Scan tickets' })).toBeTruthy();
   });
 
   it('shows the registered state instead of the register button', async () => {
