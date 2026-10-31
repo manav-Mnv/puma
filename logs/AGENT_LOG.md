@@ -57,3 +57,11 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Next:** Day 2: 3-step onboarding screens (T02 frontend), onboarding auth guard, and Cloudflare Pages CI/CD deploy workflow.
 - **Manager verdict:** APPROVED
 
+
+### [2026-10-31] Manager (Claude) · T02, T03b, T16, T04, T05 · Day 2 + Day 3
+- **Status:** PARTIAL (in review)
+- **Did:** PR #5: onboarding + guard, deploy/keepalive/backup/mobile-build workflows, eas.json, ADR-002/009. PR #6: events migration + pgTAP 002, Explore/detail/Create screens, IST helpers. Invited Party B (hemantooo).
+- **Evidence:** PR #5 CI app ✅ db ✅. Local for #6: tsc exit 0, lint clean, jest 15 passed, web export 13 routes.
+- **Left off at:** merge blocked pending Party A review; events migration not yet on edge-prod
+- **Next:** see HANDOFF
+- **Manager verdict:** pending Party A merge

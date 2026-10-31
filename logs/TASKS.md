@@ -12,17 +12,17 @@ Columns: **Backlog → Ready → In progress → Review → Verified → Done**.
 | D0-6 | A | Google Play: sponsor pays, account created + ID verified, 15–20 tester emails | Setup | Ready | Account verified by Day 5 |
 | D0-7 | A+B | Follow docs/09_SETUP_GUIDE.md Parts 1–10 | Setup | In progress (Parts 1–5 done) | Part 10 final check all ticked |
 | T01 | A | Sign-in, both paths (Parul email → Verified, personal email + ID → Unverified) | R1 | Done (PR #2 merged) | Both paths work with Google and email/password. Status correct. |
-| T02 | A | Full required profile (3 screens) + consent + student-ID validation/uniqueness | R1 | In progress (RPC in PR #2, screens Day 2) | Can't register until complete. `25UG030303` accepted, bad format rejected, duplicate blocked. |
+| T02 | A | Full required profile (3 screens) + consent + student-ID validation/uniqueness | R1 | Review (PR #5) | Can't register until complete. `25UG030303` accepted, bad format rejected, duplicate blocked. |
 | T03 | A | RLS baseline + RLS tests | R1 | Done (PR #2 merged) | Role tests pass |
 | T03b | B | CI pipeline + RLS-enabled check + web preview deploys | R1 | Done (PR #2 merged, checks required in ruleset) | CI < 10 min. Fails if any table lacks RLS. PR preview URL posted. |
-| T04 | A+B | Create event (Faculty/AD → verified) | R1 | Backlog | Badge shown. Student cannot create. |
-| T05 | A+B | Browse/search + register | R1 | Backlog | 1-tap register, idempotent, needs complete profile |
+| T04 | A+B | Create event (Faculty/AD → verified) | R1 | Review (PR #6) | Badge shown. Student cannot create. |
+| T05 | A+B | Browse/search + register | R1 | Review (PR #6) | 1-tap register, idempotent, needs complete profile |
 | T06 | B | Ticket QR, offline cache | R1 | Backlog | QR shows in airplane mode after first load |
 | T07 | A+B | Mode A scan (RPC A, UI B) | R1 | Backlog | ✅ name + Unverified tag. Second scan says "already". Wrong event rejected. |
 | T08 | A | Complete → certificates | R1 | Backlog | One cert per attendee. Second complete makes no duplicates. |
 | T09 | B | Certificate view/PDF + /verify page | R1 | Backlog | PDF on web + Android. Verify page shows minimal data. |
 | T10 | B | CSV export Edge Function + button | R1 | Backlog | Organizer/AD only. Verified/Unverified column. |
-| T16 | B | Keep-alive + weekly backup Actions | R1 | Backlog | Both workflows green. Restore drill done (Day 9). |
+| T16 | B | Keep-alive + weekly backup Actions | R1 | Review (PR #5) | Both workflows green. Restore drill done (Day 9). |
 | T18 | B | Seed institutes / courses / departments | R1 | In progress (placeholder list in PR #1, real list = D3) | Dropdowns populated, plus "Other" |
 | T19 | B | Release R1: website prod + Android APK + Sentry | R1 | Backlog | Prod URL + APK link live |
 | T11 | A+B | Clubs + Club Lead event requests | R2 | Backlog | Request → pending with status chip |
