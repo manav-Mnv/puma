@@ -87,7 +87,7 @@ On your **Android phone**: install **Expo Go** from the Play Store (to test the 
 **Website:** https://dash.cloudflare.com → sign up (free)
 
 1. **Account ID:** on the dashboard home, right sidebar (or **Workers & Pages** overview) → copy the **Account ID** → save as `CLOUDFLARE_ACCOUNT_ID`
-2. **API token:** avatar → **My Profile → API Tokens → Create Token** → custom token with permission **Account → Cloudflare Pages → Edit** → Create → save as `CLOUDFLARE_API_TOKEN` (🔐)
+2. **API token:** avatar → **My Profile → API Tokens → Create Token** → template **"Edit Cloudflare Workers"** (it includes **Account → Workers Scripts → Edit**, which the site needs: it is hosted as a Worker, not Pages) → Account Resources: your account → Create → save as `CLOUDFLARE_API_TOKEN` (🔐). A Pages-only token fails with "No access to the specified service".
 3. **Pages project:** **Workers & Pages → Create → Pages → Direct Upload** → name it `edge-parul` → you'll get `https://edge-parul.pages.dev` (if the name is taken you'll get a variant, so note the real URL). The GitHub Action deploys to it on Day 2.
 4. Go back to **Supabase → Auth → URL Configuration** and set Site URL = your `pages.dev` URL.
 
