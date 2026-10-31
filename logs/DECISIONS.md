@@ -1,9 +1,9 @@
-﻿# DECISIONS (ADRs)
+# DECISIONS (ADRs)
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
 | ADR-001 | 2026-10-09 | Use one Expo codebase for iOS/Android/Web, Supabase backend, an atomic RPC for check-in (no QStash), Cloudflare Pages hosting, Supabase Storage → R2 (no AWS S3), certificates rendered on demand, domain check fails closed | Accepted (pending Party A sign-off) |
-| ADR-002 | — | UI library: NativeWind vs Tamagui | Pending (Party B, Day 0) |
+| ADR-002 | 2026-10-31 | No Figma file exists, so no UI library: plain React Native `StyleSheet` with theme tokens in `src/constants/theme.ts` and a small in-repo kit (`src/components`). Zero extra dependencies. Revisit if a design system arrives. | Accepted |
 | ADR-003 | 2026-10-15 | Product name **EDGE** (corrected from "HADGE", a voice-typing error). Slugs: `edge-prod` (Supabase), `edge-parul` (Pages/Expo), app scheme `edgepu://` (`edge://` is reserved by the Microsoft Edge browser). Repo codename stays Puma. | Accepted |
 | ADR-004 | 2026-10-10 | Student domain **paruluniversity.ac.in**. **Two identity paths in the MVP:** Parul email → Verified; personal email/Google + student ID (`^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$`, UG/PG/other, unique) → Unverified until a Parul email is linked. Replaces the "fail closed / domain-only" rule from ADR-001. | Accepted |
 | ADR-005 | 2026-10-10 | All profile fields required before registering (ID, institute, course, year/sem, phone, gender incl. "prefer not to say", residence, personal email, consent) | Accepted |
@@ -22,3 +22,11 @@
 ## ADR-00X: Title
 **Context:** … **Decision:** … **Consequences:** … **Status:** Proposed | Accepted | Superseded
 -->
+
+## ADR-009 (2026-10-31): Party A answers + rollout focus
+- Faculty, AD and admins use the same domain, `paruluniversity.ac.in` (D8 resolved).
+- Student ID program codes: unknown beyond UG/PG, so keep the flexible pattern `^[0-9]{2}[A-Z]{2,5}[0-9]{3,8}$` (D2c).
+- Institute/course list: Party A is collecting it. The placeholder list stays until then (D3).
+- Party B = GitHub `hemantooo` (invited, write access).
+- Store accounts (Play Console, Apple) are **deferred**. Testing now goes through: website (Cloudflare Workers), Android **APK** built by EAS (`mobile-build` workflow), iPhone through **Expo Go** on a real device. An iOS *simulator* needs macOS, which the team doesn't have.
+- Website hosting is a Cloudflare **Worker with static assets** (`wrangler.jsonc`), not Pages. Same free tier, URL `edge-parul.manavbarad978.workers.dev`.

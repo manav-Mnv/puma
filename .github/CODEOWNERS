@@ -1,8 +1,8 @@
-# Party A: core backend. Party B: frontend + DevOps. Replace @PARTY_B with their GitHub handle.
+# Party A: core backend. Party B: frontend + DevOps. Party B = @hemantooo.
 *                       @manav-Mnv
 /supabase/migrations/   @manav-Mnv
 /supabase/tests/        @manav-Mnv
-# /supabase/functions/  @PARTY_B
-# /.github/             @PARTY_B
-# /app/                 @PARTY_B
-# /src/components/      @PARTY_B
+/supabase/functions/    @hemantooo
+/.github/               @hemantooo
+/src/app/               @hemantooo
+/src/components/        @hemantooo
