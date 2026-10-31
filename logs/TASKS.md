@@ -17,8 +17,8 @@ Columns: **Backlog → Ready → In progress → Review → Verified → Done**.
 | T03b | B | CI pipeline + RLS-enabled check + web preview deploys | R1 | Done (PR #2 merged, checks required in ruleset) | CI < 10 min. Fails if any table lacks RLS. PR preview URL posted. |
 | T04 | A+B | Create event (Faculty/AD → verified) | R1 | Review (PR #6) | Badge shown. Student cannot create. |
 | T05 | A+B | Browse/search + register | R1 | Review (PR #6) | 1-tap register, idempotent, needs complete profile |
-| T06 | B | Ticket QR, offline cache | R1 | Backlog | QR shows in airplane mode after first load |
-| T07 | A+B | Mode A scan (RPC A, UI B) | R1 | Backlog | ✅ name + Unverified tag. Second scan says "already". Wrong event rejected. |
+| T06 | B | Ticket QR, offline cache | R1 | Review (PR #7) | QR shows in airplane mode after first load |
+| T07 | A+B | Mode A scan (RPC A, UI B) | R1 | Review (PR #7) | ✅ name + Unverified tag. Second scan says "already". Wrong event rejected. |
 | T08 | A | Complete → certificates | R1 | Backlog | One cert per attendee. Second complete makes no duplicates. |
 | T09 | B | Certificate view/PDF + /verify page | R1 | Backlog | PDF on web + Android. Verify page shows minimal data. |
 | T10 | B | CSV export Edge Function + button | R1 | Backlog | Organizer/AD only. Verified/Unverified column. |
