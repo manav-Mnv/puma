@@ -1,0 +1,55 @@
+name: db-deploy
+
+# Applies pending supabase/migrations to the live database (edge-prod).
+# Manual only, and only Party A can run it: this replaces Environment
+# "required reviewers" (docs/08, ADR-008). Always takes a backup first.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only list what would be applied'
+        type: boolean
+        default: false
+
+concurrency:
+  group: db-deploy
+  cancel-in-progress: false
+
+jobs:
+  push:
+    if: github.actor == 'manav-Mnv'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Link project
+        run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}" --password "$SUPABASE_DB_PASSWORD"
+      - name: Pending migrations
+        run: supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
+      - name: Backup before changing the schema
+        if: ${{ !inputs.dry_run }}
+        env:
+          KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: |
+          mkdir backup
+          supabase db dump --linked -f backup/schema.sql -p "$SUPABASE_DB_PASSWORD"
+          supabase db dump --linked --data-only --use-copy -f backup/data.sql -p "$SUPABASE_DB_PASSWORD"
+          tar czf backup.tgz backup
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in backup.tgz -out pre-deploy-backup.tgz.enc -pass env:KEY
+      - uses: actions/upload-artifact@v4
+        if: ${{ !inputs.dry_run }}
+        with:
+          name: pre-deploy-backup-${{ github.run_id }}
+          path: pre-deploy-backup.tgz.enc
+          retention-days: 30
+      - name: Apply migrations
+        if: ${{ !inputs.dry_run }}
+        run: supabase db push --linked --password "$SUPABASE_DB_PASSWORD"
+      - name: Applied migrations
+        run: supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
