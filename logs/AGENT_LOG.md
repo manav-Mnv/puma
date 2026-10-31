@@ -72,3 +72,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Evidence:** tsc exit 0, lint clean, jest 22 passed, web export 15 routes
 - **Next:** Party A merges #5 → #6 → #7. Then apply migrations to edge-prod and start Day 5.
 - **Manager verdict:** pending Party A merge
+
+### [2026-10-31] Manager (Claude) · T08, T09 + deploy fix · Day 5
+- **Status:** PARTIAL (in review)
+- **Did:** Merged Days 2–4 (#7, rebase), closed #5/#6. Diagnosed the deploy failure (Wrangler 3.90, missing entry-point) → PR #8 (Wrangler 4 + db-deploy workflow). Day 5: certificates migration + pgTAP 004, complete flow, certificate view/PDF, public verify page.
+- **Evidence:** deploy log "Missing entry-point" (run on main). Day 5 local: tsc exit 0, lint clean, jest 26 passed, web export 18 routes.
+- **Next:** #8 → db-deploy → Day 5 merge → db-deploy
+- **Manager verdict:** pending CI

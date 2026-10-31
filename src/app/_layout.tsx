@@ -28,6 +28,8 @@ function RootNavigator() {
         <Stack.Screen name="event/[id]/index" />
         <Stack.Screen name="event/[id]/scan" />
         <Stack.Screen name="admin/roles" />
+        <Stack.Screen name="certificates/index" />
+        <Stack.Screen name="certificates/[serial]" />
       </Stack.Protected>
       <Stack.Protected guard={!!session && !onboarded}>
         <Stack.Screen name="onboarding" />
@@ -35,6 +37,8 @@ function RootNavigator() {
       <Stack.Protected guard={!session}>
         <Stack.Screen name="sign-in" />
       </Stack.Protected>
+      {/* Public: anyone can verify a certificate from its QR, signed in or not. */}
+      <Stack.Screen name="verify/[serial]" />
     </Stack>
   );
 }

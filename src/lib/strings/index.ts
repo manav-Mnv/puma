@@ -94,6 +94,33 @@ export const strings = {
     manualLabel: 'Or type the ticket code',
     manualSubmit: 'Check in',
   },
+  certificate: {
+    title: 'Certificate of Participation',
+    presentedTo: 'This is to certify that',
+    forAttending: 'attended',
+    organizer: 'Organizer',
+    verifyAt: 'Scan to verify',
+    serial: (s: string) => `Certificate ID: ${s}`,
+    myCertificates: 'My certificates',
+    none: 'No certificates yet. They arrive automatically after events you attended are completed.',
+    download: 'Download PDF',
+    share: 'Share',
+    notFound: 'Certificate not found.',
+    verifyTitle: 'Verify a certificate',
+    valid: '✓ Genuine EDGE certificate',
+    invalid: '✕ No certificate with this ID',
+    issuedOn: (d: string) => `Issued ${d}`,
+  },
+  complete: {
+    button: 'Mark event complete',
+    confirm: 'Everyone checked in will get a certificate. Tap again to confirm.',
+    confirmButton: 'Yes, complete and issue certificates',
+    done: (issued: number, total: number) =>
+      issued === total
+        ? `Event completed. ${total} certificate${total === 1 ? '' : 's'} issued.`
+        : `Event completed. ${issued} new certificate${issued === 1 ? '' : 's'} issued (${total} total).`,
+    completed: 'This event is complete.',
+  },
   admin: {
     open: 'Manage roles',
     title: 'Manage roles',
@@ -160,6 +187,7 @@ export const strings = {
     registration_cancelled: 'This registration was cancelled.',
     not_allowed_to_set_role: 'Only Admins can change roles.',
     staff_requires_parul_email: 'Staff roles need a verified Parul email.',
+    event_not_started: 'You can complete an event once it has started.',
   },
 } as const;
 

@@ -219,6 +219,19 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      certificates: {
+        Row: {
+          attendance_id: string
+          id: string
+          issued_at: string
+          reissue_reason: string | null
+          serial: string
+          snapshot: Json
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       registrations: {
         Row: {
           created_at: string
@@ -281,6 +294,8 @@ export type Database = {
         Args: { p_event_id: string; p_ticket_code: string }
         Returns: Json
       }
+      complete_event: { Args: { p_event_id: string }; Returns: Json }
+      verify_certificate: { Args: { p_serial: string }; Returns: Json }
       event_checked_in_count: { Args: { p_event_id: string }; Returns: number }
       is_event_organizer: { Args: { p_event_id: string }; Returns: boolean }
       cancel_registration: {

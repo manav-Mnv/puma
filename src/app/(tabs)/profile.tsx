@@ -34,6 +34,7 @@ export default function ProfileScreen() {
           </>
         ) : null}
         {profile.error ? <ThemedText>{errorMessage(profile.error)}</ThemedText> : null}
+        <Button label={strings.certificate.myCertificates} onPress={() => router.push('/certificates')} />
         {isAdmin ? <Button label={strings.admin.open} onPress={() => router.push('/admin/roles')} /> : null}
         <Button
           label={strings.profile.signOut}

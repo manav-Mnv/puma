@@ -26,8 +26,9 @@ jest.mock('@/lib/api/events', () => ({
       organizer_name: 'Prof. Mehta',
       is_verified: true,
       registered_count: 3,
-      starts_at: '2026-11-05T11:30:00.000Z',
-      ends_at: '2026-11-05T13:30:00.000Z',
+      // Already started, so the organizer can complete it.
+      starts_at: '2026-10-01T11:30:00.000Z',
+      ends_at: '2026-10-01T13:30:00.000Z',
     },
   }),
   useMyRegistration: () => ({ isPending: false, data: mockRegistration }),
@@ -40,7 +41,13 @@ jest.mock('@/lib/api/tickets', () => ({
   useIsEventOrganizer: () => ({ data: mockIsOrganizer }),
 }));
 
+const mockComplete = jest.fn();
+jest.mock('@/lib/api/certificates', () => ({
+  useCompleteEvent: () => ({ mutate: mockComplete, isPending: false, data: undefined, error: null }),
+}));
+
 beforeEach(() => {
+  mockComplete.mockClear();
   mockIsOrganizer = false;
   mockCreate.mockClear();
   mockRegister.mockClear();
@@ -94,6 +101,16 @@ describe('EventDetailScreen', () => {
     mockIsOrganizer = true;
     await render(<EventDetailScreen />);
     expect(screen.getByRole('button', { name: 'Scan tickets' })).toBeTruthy();
+  });
+
+  it('asks the organizer to confirm before completing the event', async () => {
+    mockIsOrganizer = true;
+    await render(<EventDetailScreen />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Mark event complete' }));
+    expect(mockComplete).not.toHaveBeenCalled();
+    expect(screen.getByText(/Everyone checked in will get a certificate/)).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Yes, complete and issue certificates' }));
+    expect(mockComplete).toHaveBeenCalledTimes(1);
   });
 
   it('shows the registered state instead of the register button', async () => {
