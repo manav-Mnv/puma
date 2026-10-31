@@ -185,11 +185,97 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          creator_id: string
+          creator_role: Database["public"]["Enums"]["app_role"]
+          department_id: number | null
+          description: string
+          ends_at: string
+          id: string
+          is_verified: boolean
+          organizer_name: string
+          starts_at: string
+          status: Database["public"]["Enums"]["event_status"]
+          title: string
+          venue: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: Database["public"]["Enums"]["registration_status"]
+          ticket_code: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: [
+          {
+            foreignKeyName: "registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      event_feed: {
+        Row: {
+          cover_url: string | null
+          created_at: string | null
+          creator_id: string | null
+          creator_role: Database["public"]["Enums"]["app_role"] | null
+          department_id: number | null
+          description: string | null
+          ends_at: string | null
+          id: string | null
+          is_verified: boolean | null
+          organizer_name: string | null
+          registered_count: number | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["event_status"] | null
+          title: string | null
+          venue: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      cancel_registration: {
+        Args: { p_event_id: string }
+        Returns: Database["public"]["Tables"]["registrations"]["Row"]
+      }
+      create_event: {
+        Args: { p: Json }
+        Returns: Database["public"]["Tables"]["events"]["Row"]
+      }
+      event_registered_count: { Args: { p_event_id: string }; Returns: number }
+      my_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      register_for_event: {
+        Args: { p_event_id: string }
+        Returns: Database["public"]["Tables"]["registrations"]["Row"]
+      }
+      set_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: Database["public"]["Tables"]["profiles"]["Row"]
+      }
       complete_onboarding: {
         Args: { p: Json }
         Returns: {
@@ -233,6 +319,14 @@ export type Database = {
         | "ad"
         | "admin"
         | "super_admin"
+      event_status:
+        | "draft"
+        | "pending"
+        | "published"
+        | "rejected"
+        | "completed"
+        | "cancelled"
+      registration_status: "registered" | "cancelled"
       gender: "female" | "male" | "non_binary" | "prefer_not_to_say"
       residence: "hosteller" | "day_scholar"
       verification_status: "verified" | "unverified"
