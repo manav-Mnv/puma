@@ -206,6 +206,19 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      attendance: {
+        Row: {
+          added_post_completion: boolean
+          checked_in_at: string
+          id: string
+          mode: Database["public"]["Enums"]["attendance_mode"]
+          registration_id: string
+          scanned_by: string | null
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       registrations: {
         Row: {
           created_at: string
@@ -252,6 +265,24 @@ export type Database = {
       }
     }
     Functions: {
+      admin_find_profiles: {
+        Args: { p_query: string }
+        Returns: {
+          full_name: string | null
+          id: string
+          parul_email: string | null
+          personal_email: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          student_id: string | null
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }[]
+      }
+      check_in_by_ticket: {
+        Args: { p_event_id: string; p_ticket_code: string }
+        Returns: Json
+      }
+      event_checked_in_count: { Args: { p_event_id: string }; Returns: number }
+      is_event_organizer: { Args: { p_event_id: string }; Returns: boolean }
       cancel_registration: {
         Args: { p_event_id: string }
         Returns: Database["public"]["Tables"]["registrations"]["Row"]
@@ -319,6 +350,7 @@ export type Database = {
         | "ad"
         | "admin"
         | "super_admin"
+      attendance_mode: "scan" | "self" | "manual"
       event_status:
         | "draft"
         | "pending"

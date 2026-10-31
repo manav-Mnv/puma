@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useCancelRegistration, useEvent, useMyRegistration, useRegister } from '@/lib/api/events';
+import { useIsEventOrganizer } from '@/lib/api/tickets';
 import { formatEventDate, formatEventTimeRange } from '@/lib/datetime';
 import { errorMessage, strings } from '@/lib/strings';
 
@@ -17,6 +18,7 @@ export default function EventDetailScreen() {
   const registration = useMyRegistration(id);
   const register = useRegister();
   const cancel = useCancelRegistration();
+  const isOrganizer = useIsEventOrganizer(id).data === true;
 
   const isRegistered = registration.data?.status === 'registered';
   const data = event.data;
@@ -60,6 +62,13 @@ export default function EventDetailScreen() {
                   {strings.events.going(data.registered_count ?? 0)}
                 </ThemedText>
                 {data.description ? <ThemedText>{data.description}</ThemedText> : null}
+
+                {isOrganizer ? (
+                  <Button
+                    label={strings.scan.open}
+                    onPress={() => router.push({ pathname: '/event/[id]/scan', params: { id: data.id! } })}
+                  />
+                ) : null}
 
                 {mutationError ? (
                   <ThemedText accessibilityRole="alert" style={styles.error}>

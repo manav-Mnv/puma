@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -5,6 +6,7 @@ import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
+import { useIsAdmin } from '@/lib/api/admin';
 import { useSignOut } from '@/lib/api/auth';
 import { useMyProfile } from '@/lib/api/profile';
 import { errorMessage, strings } from '@/lib/strings';
@@ -12,6 +14,7 @@ import { errorMessage, strings } from '@/lib/strings';
 export default function ProfileScreen() {
   const profile = useMyProfile();
   const signOut = useSignOut();
+  const isAdmin = useIsAdmin();
   const data = profile.data;
 
   return (
@@ -31,6 +34,7 @@ export default function ProfileScreen() {
           </>
         ) : null}
         {profile.error ? <ThemedText>{errorMessage(profile.error)}</ThemedText> : null}
+        {isAdmin ? <Button label={strings.admin.open} onPress={() => router.push('/admin/roles')} /> : null}
         <Button
           label={strings.profile.signOut}
           variant="secondary"
