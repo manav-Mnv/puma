@@ -25,6 +25,7 @@ function RootNavigator() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={!!session && onboarded}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="event/[id]" />
       </Stack.Protected>
       <Stack.Protected guard={!!session && !onboarded}>
         <Stack.Screen name="onboarding" />
