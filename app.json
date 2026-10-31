@@ -41,7 +41,8 @@
           "cameraPermission": "EDGE uses the camera to scan event tickets.",
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,

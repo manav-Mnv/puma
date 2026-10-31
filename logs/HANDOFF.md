@@ -1,22 +1,20 @@
 # HANDOFF: resume point (overwrite at every stop)
 
-**Updated:** 2026-10-31 · **By:** Claude (Manager) · **Phase:** Days 2–4 built, waiting for Party A to merge (#5 → #6 → #7)
+**Updated:** 2026-10-31 · **By:** Claude (Manager) · **Phase:** Days 2–4 merged (#7); fix #8 and Day 5 in review
 
 ## State
-- **PR #5 (Day 2)**: onboarding (3 steps + guard), `deploy.yml` (web → Cloudflare Worker `edge-parul`), `keepalive.yml`, `backup.yml`, `eas.json` + `mobile-build.yml` (Android APK). CI ✅ app + db. **Waiting for Party A to merge.**
-- **PR #6 (Day 3)**, stacked on #5: events + registrations migration (`20261031000001_events.sql`), pgTAP 002 (18 tests), Explore / event detail / Create screens. Local: tsc ✅, lint ✅, jest 15/15 ✅, web export 13 routes ✅.
-- **PR #7 (Day 4)**, stacked on #6: attendance + `check_in_by_ticket` + admin search (`20261101000001_checkin.sql`, pgTAP 003 with 15 tests), Tickets tab (offline QR), scanner `/event/[id]/scan`, `/admin/roles`. Local: tsc ✅ lint ✅ jest 22/22 ✅ web 15 routes ✅.
-- The events and check-in migrations are **NOT applied to edge-prod** yet. Apply it after #6's CI is green and it's merged.
-- Party B `hemantooo` invited (write). CODEOWNERS updated in #5.
-- Decisions: ADR-002 (no UI library) and ADR-009 (faculty domain = paruluniversity.ac.in, flexible ID codes, store accounts deferred, testing via web + APK + Expo Go).
+- `main` has Days 1–4: onboarding, events, register, tickets (offline QR), Mode A scanner, admin roles, workflows (deploy/keepalive/backup/mobile-build). PRs #5 and #6 were closed because they landed via #7.
+- **deploy failed** on main (Wrangler 3.90 can't deploy an assets-only Worker). **PR #8** pins Wrangler 4 and adds the manual `db-deploy` workflow. Auto-merge is on.
+- edge-prod has only the `identity` migration. **Pending:** `20261031000001_events`, `20261101000001_checkin`, and (after Day 5 merges) `20261101000002_certificates`. Apply them with the **db-deploy** workflow, which takes a backup first and keeps version numbers in sync.
+- **Day 5 PR** (`feat/T08-T09-certificates`): certificates table, `complete_event`, public `verify_certificate`, pgTAP 004 (13 tests). Screens: Mark complete (2-tap confirm), My certificates, certificate view + PDF download (print on web, expo-print + share on native), public `/verify/[serial]`. Local: tsc ✅ lint ✅ jest 26/26 ✅ web export 18 routes ✅.
 
 ## Next (in order)
-1. **Party A:** merge PR #5 (squash). The website auto-deploys from `deploy.yml`, so check the Actions tab is green.
-2. Rebase #6 on main: `git rebase --onto origin/main feat/T02-onboarding-deploy feat/T04-T05-events`, then force-push. Wait for CI, then Party A merges.
-3. Apply `20261031000001_events.sql` to edge-prod (Supabase MCP `apply_migration`) and regenerate `src/lib/api/database.types.ts`.
-4. Party A: make yourself super_admin once (SQL in PR #6), promote faculty with `set_role`, create a test event.
-5. Run the **mobile-build** workflow, install the APK, and test on an iPhone with Expo Go (`npx expo start`).
-6. After #7: apply `20261101000001_checkin.sql` to edge-prod. Next is Day 5: mark complete → certificates + `/verify` page.
+1. #8 merges → `deploy` re-runs (check it's green) → run **db-deploy** (Actions → db-deploy → Run workflow).
+2. Day 5 PR CI green → merge → run db-deploy again (certificates migration).
+3. Regenerate `src/lib/api/database.types.ts` from edge-prod.
+4. Party A: make yourself super_admin (SQL), create an event, register with a second account, scan, complete, open the certificate, scan its QR.
+5. Run **mobile-build** for an Android APK.
+6. Day 6: R1 hardening. Playwright golden-path E2E, bug bash, empty/error states, accessibility pass, R1 release tag v0.1.0.
 
 ## Open questions
-Real institute/course list (Party A collecting). Program codes beyond UG/PG (flexible for now).
+Real institute/course list. Program codes beyond UG/PG.

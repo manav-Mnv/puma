@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,9 +9,52 @@ import { ThemedView } from '@/components/themed-view';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useCancelRegistration, useEvent, useMyRegistration, useRegister } from '@/lib/api/events';
+import { useCompleteEvent } from '@/lib/api/certificates';
 import { useIsEventOrganizer } from '@/lib/api/tickets';
 import { formatEventDate, formatEventTimeRange } from '@/lib/datetime';
 import { errorMessage, strings } from '@/lib/strings';
+
+function OrganizerPanel({ eventId, startsAt, completed }: { eventId: string; startsAt: string; completed: boolean }) {
+  const complete = useCompleteEvent(eventId);
+  const [confirming, setConfirming] = useState(false);
+  // Read once on mount (render must stay pure); the DB re-checks the start time anyway.
+  const [started] = useState(() => new Date(startsAt).getTime() <= Date.now());
+
+  return (
+    <View style={styles.panel}>
+      <Button
+        label={strings.scan.open}
+        variant="secondary"
+        onPress={() => router.push({ pathname: '/event/[id]/scan', params: { id: eventId } })}
+      />
+      {/* Re-running complete issues certificates for late (post-complete) check-ins. */}
+      {started ? (
+        confirming ? (
+          <>
+            <ThemedText type="small">{strings.complete.confirm}</ThemedText>
+            <Button
+              label={strings.complete.confirmButton}
+              loading={complete.isPending}
+              onPress={() => complete.mutate(undefined, { onSettled: () => setConfirming(false) })}
+            />
+          </>
+        ) : (
+          <Button label={strings.complete.button} variant={completed ? 'secondary' : 'primary'} onPress={() => setConfirming(true)} />
+        )
+      ) : null}
+      {complete.data ? (
+        <ThemedText type="small" accessibilityRole="alert">
+          {strings.complete.done(complete.data.issued, complete.data.total)}
+        </ThemedText>
+      ) : null}
+      {complete.error ? (
+        <ThemedText type="small" accessibilityRole="alert" style={styles.error}>
+          {errorMessage(complete.error)}
+        </ThemedText>
+      ) : null}
+    </View>
+  );
+}
 
 export default function EventDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -64,10 +108,14 @@ export default function EventDetailScreen() {
                 {data.description ? <ThemedText>{data.description}</ThemedText> : null}
 
                 {isOrganizer ? (
-                  <Button
-                    label={strings.scan.open}
-                    onPress={() => router.push({ pathname: '/event/[id]/scan', params: { id: data.id! } })}
+                  <OrganizerPanel
+                    eventId={data.id!}
+                    startsAt={data.starts_at}
+                    completed={data.status === 'completed'}
                   />
+                ) : null}
+                {data.status === 'completed' ? (
+                  <ThemedText type="smallBold">{strings.complete.completed}</ThemedText>
                 ) : null}
 
                 {mutationError ? (
@@ -88,7 +136,7 @@ export default function EventDetailScreen() {
                       onPress={() => cancel.mutate(data.id!)}
                     />
                   </>
-                ) : (
+                ) : data.status === 'completed' ? null : (
                   <Button
                     label={register.isPending ? strings.events.registering : strings.events.register}
                     loading={register.isPending}
@@ -120,6 +168,9 @@ const styles = StyleSheet.create({
   },
   back: {
     alignSelf: 'flex-start',
+  },
+  panel: {
+    gap: Spacing.two,
   },
   error: {
     color: '#C62828',
