@@ -1,22 +1,19 @@
 ﻿# HANDOFF: resume point (overwrite at every stop)
 
-**Updated:** 2026-10-15 · **By:** Claude · **Phase:** Day 0 (in progress)
+**Updated:** 2026-10-15 · **By:** Claude (Manager) · **Phase:** Day 0 (mostly done) + Day 1 (in review)
 
 ## State
-- Product name corrected to **EDGE** everywhere (repo + Drive). ADR-003 updated. Slugs: `edge-prod`, `edge-parul`, scheme `edgepu://`.
-- Calendar re-baselined: Day 1 = 16 Oct, R1 = 21 Oct, pilot = 25 Oct (docs/05).
-- ✅ Supabase `edge-prod` created (ref `zhgjmecutkdwtswrdzhc`, Mumbai, org "swift coding club", $0). GitHub secrets set: SUPABASE_PROJECT_REF, EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY (publishable key). `.env.example` committed, local `.env` created (git-ignored).
-- ⚠️ Both free Supabase slots are now used, so there is no spare for an emergency restore.
-- No app code yet. No GitHub secrets. Party B not added.
+- Repo **public**. Ruleset `protect-main`: PR required (0 approvals until Party B joins, then raise it to 1), no force-push or deletion, linear history.
+- Supabase `edge-prod` (ref `zhgjmecutkdwtswrdzhc`, Mumbai). 3 public secrets in GitHub. Local `.env` set.
+- **PR #1** `feat/T01-day1-foundation`: Expo app (sign-in, session guard, tabs), identity migration (profiles + RLS + sign-up trigger for both paths + `complete_onboarding`), 20 pgTAP + 6 Jest tests, CI workflow.
+  - Local: tsc ✅, lint ✅, jest 6/6 ✅, web export ✅, browser check (sign-in renders) ✅. pgTAP runs in CI (local Docker didn't start).
+- The migration is **NOT yet applied to edge-prod**. Apply it only after the CI `db` job is green.
 
 ## Next (in order)
-1. **Party A (Supabase dashboard, secrets only you can copy):** Settings → Database → reset/copy the DB password → secret SUPABASE_DB_PASSWORD · Settings → API Keys → secret key → SUPABASE_SERVICE_ROLE_KEY · Account → Access Tokens → SUPABASE_ACCESS_TOKEN. Then Auth → Providers: Email on + Confirm email; Google (after docs/09 Part 3).
-2. Party A: decide whether the repo goes public, or apply for the Student Developer Pack.
-3. Party A: add Party B to GitHub (send their username), and make the Drive folder view-only (hemntomn → Viewer).
-4. Party A: Play Console ($25 sponsor) + 15–20 tester emails.
-5. Both: docs/09_SETUP_GUIDE.md Parts 1, 3–8 (Google OAuth, Cloudflare, Expo, Sentry, secrets).
-6. Answer: faculty email domain? Program codes besides UG/PG?
-7. Then: "Act as Manager per CLAUDE.md. Day 0 is done. Start Day 1 per docs/05."
+1. CI green on PR #1 → apply the migration to edge-prod (Supabase MCP `apply_migration`) → regenerate `src/lib/api/database.types.ts` → merge PR #1.
+2. Add the required status checks (`app`, `db`) to the `protect-main` ruleset.
+3. Party A (only you can do these): 3 private Supabase secrets (DB password, service-role, access token) · Google OAuth (docs/09 Part 3) · Cloudflare + Expo accounts · Party B's GitHub username · Drive: hemntomn → Viewer · Play Console + testers.
+4. Day 2: onboarding screens (3 steps) + onboarding guard, web deploy pipeline (needs Cloudflare).
 
-## Resume command
-Paste the "kick-off" message from docs/06_SYSTEM_PROMPTS.md into Claude Code at the repo root.
+## Open questions
+Faculty email domain · program codes besides UG/PG · real institute/course list (D3)

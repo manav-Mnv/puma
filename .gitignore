@@ -33,3 +33,12 @@ logs/*.local.md
 Thumbs.db
 .vscode/
 .idea/
+
+# expo / native
+expo-env.d.ts
+.metro-health-check*
+.kotlin/
+/ios
+/android
+*.pem
+npm-debug.*
