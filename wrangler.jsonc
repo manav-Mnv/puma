@@ -1,0 +1,11 @@
+// Cloudflare Worker that serves the static Expo web export (dist/).
+// Deployed by .github/workflows/deploy.yml -> https://edge-parul.<account>.workers.dev
+{
+  "name": "edge-parul",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths (e.g. /event/<id>) fall back to index.html; Expo Router resolves them client-side.
+    "not_found_handling": "single-page-application"
+  }
+}

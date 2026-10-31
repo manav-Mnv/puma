@@ -1,0 +1,42 @@
+name: backup
+
+# Weekly encrypted Postgres backup (free tier has no backups, NFR-6).
+# Artifacts on a public repo are visible to signed-in users, so the dump is
+# encrypted with BACKUP_ENCRYPTION_KEY before upload.
+# Restore: download artifact -> openssl decrypt (see docs/08) -> psql into a fresh project.
+on:
+  schedule:
+    - cron: '30 20 * * 0' # Sundays, 02:00 IST (Monday)
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Link project
+        run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+      - name: Dump roles, schema and data
+        run: |
+          mkdir backup
+          supabase db dump --linked --role-only -f backup/roles.sql -p "${{ secrets.SUPABASE_DB_PASSWORD }}"
+          supabase db dump --linked -f backup/schema.sql -p "${{ secrets.SUPABASE_DB_PASSWORD }}"
+          supabase db dump --linked --data-only --use-copy -f backup/data.sql -p "${{ secrets.SUPABASE_DB_PASSWORD }}"
+      - name: Encrypt
+        env:
+          KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: |
+          tar czf backup.tgz backup
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in backup.tgz -out edge-backup.tgz.enc -pass env:KEY
+          rm -rf backup backup.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edge-backup-${{ github.run_id }}
+          path: edge-backup.tgz.enc
+          retention-days: 30
