@@ -4,18 +4,25 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 're
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
+import { ChipGroup } from '@/components/chip-group';
 import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useCanCreateEvents, useCreateEvent } from '@/lib/api/events';
+import { useMyApprovedClubs } from '@/lib/api/portal';
 import { istToIso } from '@/lib/datetime';
 import { errorMessage, strings } from '@/lib/strings';
 
 const t = strings.create;
 
 export default function CreateScreen() {
-  const canCreate = useCanCreateEvents();
+  const canCreateDirect = useCanCreateEvents();
+  const ledClubs = useMyApprovedClubs();
+  const canCreate = canCreateDirect || ledClubs.length > 0;
+  const [clubId, setClubId] = useState<string>('');
+  // Club Leads must host as one of their clubs; staff may also host as themselves.
+  const hostClub = clubId || (!canCreateDirect ? ledClubs[0]?.id ?? '' : '');
   const create = useCreateEvent();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -32,7 +39,7 @@ export default function CreateScreen() {
 
   function submit() {
     create.mutate(
-      { title, description, venue, starts_at: startsAt!, ends_at: endsAt! },
+      { title, description, venue, starts_at: startsAt!, ends_at: endsAt!, club_id: hostClub || undefined },
       { onSuccess: (event) => router.push({ pathname: '/event/[id]', params: { id: event.id } }) }
     );
   }
@@ -51,6 +58,22 @@ export default function CreateScreen() {
                 <ThemedText themeColor="textSecondary">{t.notAllowed}</ThemedText>
               ) : (
                 <>
+                  {ledClubs.length ? (
+                    <ChipGroup
+                      label={strings.clubs.hostClub}
+                      options={[
+                        ...(canCreateDirect ? [{ value: '', label: strings.portal.title }] : []),
+                        ...ledClubs.map((c) => ({ value: c.id, label: c.name })),
+                      ]}
+                      value={hostClub}
+                      onChange={setClubId}
+                    />
+                  ) : null}
+                  {hostClub ? (
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {strings.clubs.pendingNote}
+                    </ThemedText>
+                  ) : null}
                   <TextField label={t.eventTitle} value={title} onChangeText={setTitle} maxLength={120} />
                   <TextField
                     label={t.description}
