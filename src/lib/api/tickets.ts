@@ -118,3 +118,37 @@ export function useCheckIn(eventId: string) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['checked-in', eventId] }),
   });
 }
+
+/** Mode B: the code behind the big-screen QR (organizer only). */
+export function useCheckinCode(eventId: string) {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: ['checkin-code', eventId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_checkin_code', { p_event_id: eventId });
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+  const rotate = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('get_checkin_code', { p_event_id: eventId, p_rotate: true });
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: (code) => queryClient.setQueryData(['checkin-code', eventId], code),
+  });
+  return { query, rotate };
+}
+
+export function useSelfCheckIn() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ eventId, code }: { eventId: string; code: string }) => {
+      const { data, error } = await supabase.rpc('self_check_in', { p_event_id: eventId, p_code: code });
+      if (error) throw new Error(error.message);
+      return data as unknown as { status: 'ok' | 'already'; event_title: string };
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tickets'] }),
+  });
+}
