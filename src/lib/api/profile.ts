@@ -28,8 +28,11 @@ export function useMyProfile() {
   return useQuery({
     queryKey: ['profile', userId],
     enabled: !!userId,
+    // A missing row returns null (→ onboarding, which recreates it) instead of
+    // erroring and retrying, which used to leave the app on a blank screen.
+    retry: 1,
     queryFn: async () => {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId!).single();
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId!).maybeSingle();
       if (error) throw error;
       return data;
     },

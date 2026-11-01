@@ -3,6 +3,9 @@
 export const strings = {
   appName: 'EDGE',
   tagline: 'Every Node, Connected.',
+  common: {
+    retry: 'Try again',
+  },
   tabs: {
     explore: 'Explore',
     tickets: 'Tickets',
