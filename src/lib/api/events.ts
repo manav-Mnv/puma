@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Database } from '@/lib/api/database.types';
 import { useMyProfile } from '@/lib/api/profile';
 import { useSession } from '@/lib/api/session';
+import { shareCsv, toCsv } from '@/lib/csv';
 import { supabase } from '@/lib/supabase';
 
 export type FeedEvent = Database['public']['Views']['event_feed']['Row'];
@@ -119,5 +120,48 @@ export function useCreateEvent() {
       return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
+  });
+}
+
+export function useUpdateEvent(eventId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: CreateEventInput) => {
+      const { data, error } = await supabase.rpc('update_event', { p_event_id: eventId, p: input });
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['event', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      queryClient.invalidateQueries({ queryKey: ['my-events'] });
+    },
+  });
+}
+
+export function useCancelEvent(eventId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.rpc('cancel_event', { p_event_id: eventId });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['event', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      queryClient.invalidateQueries({ queryKey: ['my-events'] });
+    },
+  });
+}
+
+/** HOD attendance sheet: fetch the roster and download/share it as CSV. */
+export function useDownloadRoster(eventId: string) {
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('event_roster', { p_event_id: eventId });
+      if (error) throw new Error(error.message);
+      if (!data?.length) throw new Error('roster_empty');
+      await shareCsv(`edge-attendance-${eventId.slice(0, 8)}.csv`, toCsv(data));
+    },
   });
 }

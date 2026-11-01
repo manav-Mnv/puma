@@ -8,20 +8,41 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { useCancelRegistration, useEvent, useMyRegistration, useRegister } from '@/lib/api/events';
+import {
+  useCancelEvent,
+  useCancelRegistration,
+  useDownloadRoster,
+  useEvent,
+  useMyRegistration,
+  useRegister,
+} from '@/lib/api/events';
 import { useCompleteEvent } from '@/lib/api/certificates';
 import { useIsEventOrganizer } from '@/lib/api/tickets';
 import { formatEventDate, formatEventTimeRange } from '@/lib/datetime';
 import { errorMessage, strings } from '@/lib/strings';
 
-function OrganizerPanel({ eventId, startsAt, completed }: { eventId: string; startsAt: string; completed: boolean }) {
+function OrganizerPanel({ eventId, startsAt, status }: { eventId: string; startsAt: string; status: string }) {
   const complete = useCompleteEvent(eventId);
+  const cancelEvent = useCancelEvent(eventId);
   const [confirming, setConfirming] = useState(false);
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const completed = status === 'completed';
+  const editable = status !== 'completed' && status !== 'cancelled';
+  const csv = useDownloadRoster(eventId);
   // Read once on mount (render must stay pure); the DB re-checks the start time anyway.
   const [started] = useState(() => new Date(startsAt).getTime() <= Date.now());
 
   return (
     <View style={styles.panel}>
+      {editable ? (
+        <Button
+          label={strings.organizer.edit}
+          variant="secondary"
+          onPress={() => router.push({ pathname: '/event/[id]/edit', params: { id: eventId } })}
+        />
+      ) : null}
+      <Button label={strings.organizer.csv} variant="secondary" loading={csv.isPending} onPress={() => csv.mutate()} />
+      {csv.error ? <ThemedText type="small">{errorMessage(csv.error)}</ThemedText> : null}
       <Button
         label={strings.scan.open}
         variant="secondary"
@@ -46,6 +67,25 @@ function OrganizerPanel({ eventId, startsAt, completed }: { eventId: string; sta
         ) : (
           <Button label={strings.complete.button} variant={completed ? 'secondary' : 'primary'} onPress={() => setConfirming(true)} />
         )
+      ) : null}
+      {editable ? (
+        confirmingCancel ? (
+          <>
+            <ThemedText type="small">{strings.organizer.cancelConfirm}</ThemedText>
+            <Button
+              label={strings.organizer.cancelYes}
+              loading={cancelEvent.isPending}
+              onPress={() => cancelEvent.mutate(undefined, { onSettled: () => setConfirmingCancel(false) })}
+            />
+          </>
+        ) : (
+          <Button label={strings.organizer.cancel} variant="secondary" onPress={() => setConfirmingCancel(true)} />
+        )
+      ) : null}
+      {cancelEvent.error ? (
+        <ThemedText type="small" accessibilityRole="alert" style={styles.error}>
+          {errorMessage(cancelEvent.error)}
+        </ThemedText>
       ) : null}
       {complete.data ? (
         <ThemedText type="small" accessibilityRole="alert">
@@ -116,8 +156,11 @@ export default function EventDetailScreen() {
                   <OrganizerPanel
                     eventId={data.id!}
                     startsAt={data.starts_at}
-                    completed={data.status === 'completed'}
+                    status={data.status ?? ''}
                   />
+                ) : null}
+                {data.status === 'cancelled' ? (
+                  <ThemedText type="smallBold">{strings.organizer.cancelled}</ThemedText>
                 ) : null}
                 {data.status === 'completed' ? (
                   <ThemedText type="smallBold">{strings.complete.completed}</ThemedText>
@@ -141,7 +184,7 @@ export default function EventDetailScreen() {
                       onPress={() => cancel.mutate(data.id!)}
                     />
                   </>
-                ) : data.status === 'completed' ? null : (
+                ) : data.status === 'completed' || data.status === 'cancelled' ? null : (
                   <Button
                     label={register.isPending ? strings.events.registering : strings.events.register}
                     loading={register.isPending}

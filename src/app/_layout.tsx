@@ -8,6 +8,7 @@ import { StatusScreen } from '@/components/status-screen';
 import { useSignOut } from '@/lib/api/auth';
 import { useMyProfile } from '@/lib/api/profile';
 import { SessionProvider, useSession } from '@/lib/api/session';
+import { usePendingLink } from '@/lib/pending-link';
 import { errorMessage, strings } from '@/lib/strings';
 
 SplashScreen.preventAutoHideAsync();
@@ -18,6 +19,7 @@ function RootNavigator() {
   const signOut = useSignOut();
   const profileLoading = !!session && profile.isPending;
   const onboarded = !!profile.data?.onboarded_at;
+  usePendingLink(!isLoading && !profileLoading && !!session && onboarded, !!session);
 
   useEffect(() => {
     if (!isLoading && !profileLoading) SplashScreen.hideAsync();
@@ -51,6 +53,7 @@ function RootNavigator() {
         <Stack.Screen name="inbox" />
         <Stack.Screen name="event/[id]/display" />
         <Stack.Screen name="checkin/[id]" />
+        <Stack.Screen name="event/[id]/edit" />
       </Stack.Protected>
       <Stack.Protected guard={!!session && !onboarded}>
         <Stack.Screen name="onboarding" />

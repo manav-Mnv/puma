@@ -34,6 +34,8 @@ jest.mock('@/lib/api/events', () => ({
   useMyRegistration: () => ({ isPending: false, data: mockRegistration }),
   useRegister: () => ({ mutate: mockRegister, isPending: false, error: null }),
   useCancelRegistration: () => ({ mutate: jest.fn(), isPending: false, error: null }),
+  useCancelEvent: () => ({ mutate: jest.fn(), isPending: false, error: null }),
+  useDownloadRoster: () => ({ mutate: jest.fn(), isPending: false, error: null }),
 }));
 
 let mockIsOrganizer = false;

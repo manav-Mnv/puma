@@ -8,17 +8,20 @@ export type Profile = Database['public']['Tables']['profiles']['Row'];
 export type Institute = Database['public']['Tables']['institutes']['Row'];
 
 export type OnboardingInput = {
+  kind?: 'student' | 'staff';
+  staff_mis_id?: string;
+  designation?: string;
   full_name: string;
-  student_id: string;
+  student_id?: string;
   institute_id: number;
   institute_other?: string;
-  course: string;
-  year: number;
-  semester: number;
+  course?: string;
+  year?: number;
+  semester?: number;
   phone: string;
   personal_email?: string;
   gender: Database['public']['Enums']['gender'];
-  residence: Database['public']['Enums']['residence'];
+  residence?: Database['public']['Enums']['residence'];
   consent: boolean;
 };
 
