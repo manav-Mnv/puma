@@ -93,3 +93,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Evidence:** CI #13, #14/#15: app ✅ db ✅ e2e ✅. Jest 33. pgTAP 001–008. Web export 24 routes with manifest.
 - **Next:** Party A: db-deploy, super_admin, SMTP, pilot. Backlog: push, faculty onboarding, CSV, k6.
 - **Manager verdict:** VERIFIED (CI evidence)
+
+### [2026-11-01] Manager (Claude) · pre-pilot · staff onboarding, edit/cancel, CSV, reminders, pending link
+- **Status:** DONE (PR #18, pending CI)
+- **Did:** Migration 20261103000001 + pgTAP 009. Onboarding staff path. Edit/cancel events with critical alerts. CSV roster. pg_cron reminders. Pending check-in link. #17 Expo deps + APK summary fix. New APK built (FINISHED).
+- **Evidence:** local tsc 0, lint clean, Jest 36/36
+- **Next:** Party A db-deploy, then pilot
+- **Manager verdict:** pending CI
