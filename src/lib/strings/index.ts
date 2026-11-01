@@ -120,7 +120,7 @@ export const strings = {
   signIn: {
     title: 'Sign in to EDGE',
     subtitle:
-      'Use your @paruluniversity.ac.in email to be verified instantly. No Parul email yet? Use any email and your student ID.',
+      'Sign in with your @paruluniversity.ac.in Google account to be verified instantly. No Parul email yet? Use your personal Gmail and your student ID.',
     google: 'Continue with Google',
     or: 'or',
     email: 'Email',

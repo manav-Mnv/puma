@@ -68,6 +68,8 @@ jobs:
           echo "EXPO_PUBLIC_SUPABASE_URL=$(val API_URL)" >> "$GITHUB_ENV"
           echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=$(val ANON_KEY)" >> "$GITHUB_ENV"
           echo "E2E_DB_URL=$(val DB_URL)" >> "$GITHUB_ENV"
+          # The E2E test can't drive Google's login, so it uses the hidden email form.
+          echo "EXPO_PUBLIC_ENABLE_EMAIL_LOGIN=true" >> "$GITHUB_ENV"
       - run: npm ci
       - run: npm run build:web
       - run: npx playwright install --with-deps chromium
