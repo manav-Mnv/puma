@@ -342,6 +342,8 @@ export type Database = {
           check_in_mode: string | null
         }[]
       }
+      register_push_token: { Args: { p_token: string }; Returns: undefined }
+      unregister_push_token: { Args: { p_token: string }; Returns: undefined }
       request_club: { Args: { p_name: string; p_description: string }; Returns: Database["public"]["Tables"]["clubs"]["Row"] }
       join_club: { Args: { p_club_id: string }; Returns: undefined }
       leave_club: { Args: { p_club_id: string }; Returns: undefined }

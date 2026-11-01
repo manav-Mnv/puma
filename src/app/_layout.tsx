@@ -9,6 +9,7 @@ import { useSignOut } from '@/lib/api/auth';
 import { useMyProfile } from '@/lib/api/profile';
 import { SessionProvider, useSession } from '@/lib/api/session';
 import { usePendingLink } from '@/lib/pending-link';
+import { usePushNotifications } from '@/lib/push';
 import { errorMessage, strings } from '@/lib/strings';
 
 SplashScreen.preventAutoHideAsync();
@@ -20,6 +21,7 @@ function RootNavigator() {
   const profileLoading = !!session && profile.isPending;
   const onboarded = !!profile.data?.onboarded_at;
   usePendingLink(!isLoading && !profileLoading && !!session && onboarded, !!session);
+  usePushNotifications(!!session && onboarded);
 
   useEffect(() => {
     if (!isLoading && !profileLoading) SplashScreen.hideAsync();
