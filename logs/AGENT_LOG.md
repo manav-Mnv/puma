@@ -86,3 +86,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Evidence:** SQL: auth_users=2, profiles=0, users created 12:07/12:08 on 31 Oct. #11 CI ✅. #10 CI app ✅ db ✅ **e2e ✅** (first run). Jest 27/27.
 - **Next:** Party A runs db-deploy, then tag v0.1.0
 - **Manager verdict:** VERIFIED (CI evidence)
+
+### [2026-11-01] Manager (Claude) · T02, T11–T15, T17 · Days 7–10
+- **Status:** DONE (pending Party A db-deploy)
+- **Did:** #13 enrollment-number IDs. #15 (incl. Day 7): Manage portal, Super Admin console, clubs + approvals, enrollment upgrade on Parul email link, Mode B self check-in, notifications inbox. Day 9–10: PWA manifest + install guide, logs, release prep. APK build started.
+- **Evidence:** CI #13, #14/#15: app ✅ db ✅ e2e ✅. Jest 33. pgTAP 001–008. Web export 24 routes with manifest.
+- **Next:** Party A: db-deploy, super_admin, SMTP, pilot. Backlog: push, faculty onboarding, CSV, k6.
+- **Manager verdict:** VERIFIED (CI evidence)

@@ -24,11 +24,11 @@ Columns: **Backlog → Ready → In progress → Review → Verified → Done**.
 | T10 | B | CSV export Edge Function + button | R1 | Backlog | Organizer/AD only. Verified/Unverified column. |
 | T16 | B | Keep-alive + weekly backup Actions | R1 | Done (merged via #7) | Both workflows green. Restore drill done (Day 9). |
 | T18 | B | Seed institutes / courses / departments | R1 | In progress (placeholder list in PR #1, real list = D3) | Dropdowns populated, plus "Other" |
-| T19 | B | Release R1: website prod + Android APK + Sentry | R1 | In progress (web live, E2E green #10; APK + tag pending) | Prod URL + APK link live |
-| T11 | A+B | Clubs + Club Lead event requests | R2 | Backlog | Request → pending with status chip |
-| T12 | A+B | AD approval queue | R2 | Backlog | Approve/reject with remarks. Event becomes verified. |
-| T13 | A+B | Mode B self check-in (RPC A, UI B) + k6 (B) | R2 | Backlog | p95 < 1.5 s @ 1,000/60 s, 0 duplicates |
-| T14 | B | Push Edge Function + reminder cron + in-app inbox | R2 | Backlog | Android + web receive. Critical can't be muted. |
+| T19 | B | Release R1: website prod + Android APK + Sentry | R1 | Web + PWA live, E2E green, APK building; tag v0.9.0 | Prod URL + APK link live |
+| T11 | A+B | Clubs + Club Lead event requests | R2 | Done (#15) | Request → pending with status chip |
+| T12 | A+B | AD approval queue | R2 | Done (#15) | Approve/reject with remarks. Event becomes verified. |
+| T13 | A+B | Mode B self check-in (RPC A, UI B) + k6 (B) | R2 | Done except k6 (#15) | p95 < 1.5 s @ 1,000/60 s, 0 duplicates |
+| T14 | B | Push Edge Function + reminder cron + in-app inbox | R2 | Inbox done (#15); push pending | Android + web receive. Critical can't be muted. |
 | T15 | B | Play closed testing (Day 6) → production application (≈ Day 20) + PWA install guide | R2 | Backlog | 15–20 testers opted in, pilot installs from Play. Production applied for after 14 days. |
-| T17 | A | Link Parul email → Verified | R2 | Backlog | Same account, history kept. Duplicate Parul email refused. |
+| T17 | A | Link Parul email → Verified | R2 | Done (#15) | Same account, history kept. Duplicate Parul email refused. |
 | R3-iOS | B (A in solo) | iPhone: Apple enrollment → EAS iOS → TestFlight → App Store | R3 | Backlog | App approved |

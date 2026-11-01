@@ -6,6 +6,11 @@ export const strings = {
   common: {
     retry: 'Try again',
   },
+  install: {
+    title: 'Install EDGE on your phone',
+    iphone: 'iPhone: tap Share → Add to Home Screen.',
+    android: 'Android: tap ⋮ → Install app (or download the APK).',
+  },
   display: {
     open: 'Show check-in screen',
     title: 'Scan to check in',
