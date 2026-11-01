@@ -219,6 +219,22 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          critical: boolean
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       clubs: {
         Row: {
           advisor_id: string | null
@@ -304,6 +320,9 @@ export type Database = {
       }
     }
     Functions: {
+      get_checkin_code: { Args: { p_event_id: string; p_rotate?: boolean }; Returns: string }
+      self_check_in: { Args: { p_event_id: string; p_code: string }; Returns: Json }
+      mark_notifications_read: { Args: never; Returns: undefined }
       request_club: { Args: { p_name: string; p_description: string }; Returns: Database["public"]["Tables"]["clubs"]["Row"] }
       join_club: { Args: { p_club_id: string }; Returns: undefined }
       leave_club: { Args: { p_club_id: string }; Returns: undefined }

@@ -27,6 +27,11 @@ function OrganizerPanel({ eventId, startsAt, completed }: { eventId: string; sta
         variant="secondary"
         onPress={() => router.push({ pathname: '/event/[id]/scan', params: { id: eventId } })}
       />
+      <Button
+        label={strings.display.open}
+        variant="secondary"
+        onPress={() => router.push({ pathname: '/event/[id]/display', params: { id: eventId } })}
+      />
       {/* Re-running complete issues certificates for late (post-complete) check-ins. */}
       {started ? (
         confirming ? (

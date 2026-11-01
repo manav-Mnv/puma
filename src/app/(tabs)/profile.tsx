@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useSignOut } from '@/lib/api/auth';
+import { useUnreadCount } from '@/lib/api/inbox';
 import { useLinkParulEmail, usePortalAccess } from '@/lib/api/portal';
 import { useMyProfile } from '@/lib/api/profile';
 import { errorMessage, strings } from '@/lib/strings';
@@ -44,6 +45,7 @@ export default function ProfileScreen() {
   const profile = useMyProfile();
   const signOut = useSignOut();
   const access = usePortalAccess();
+  const unread = useUnreadCount();
   const data = profile.data;
 
   return (
@@ -68,6 +70,7 @@ export default function ProfileScreen() {
             ) : null}
             {profile.error ? <ThemedText>{errorMessage(profile.error)}</ThemedText> : null}
 
+            <Button label={strings.inbox.open(unread)} variant={unread ? 'primary' : 'secondary'} onPress={() => router.push('/inbox')} />
             {access.isStaff ? <Button label={strings.portal.open} onPress={() => router.push('/manage')} /> : null}
             <Button label={strings.certificate.myCertificates} variant="secondary" onPress={() => router.push('/certificates')} />
             <Button label={strings.clubs.open} variant="secondary" onPress={() => router.push('/clubs')} />

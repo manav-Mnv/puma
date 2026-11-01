@@ -48,6 +48,9 @@ function RootNavigator() {
         <Stack.Screen name="manage/index" />
         <Stack.Screen name="super" />
         <Stack.Screen name="clubs" />
+        <Stack.Screen name="inbox" />
+        <Stack.Screen name="event/[id]/display" />
+        <Stack.Screen name="checkin/[id]" />
       </Stack.Protected>
       <Stack.Protected guard={!!session && !onboarded}>
         <Stack.Screen name="onboarding" />

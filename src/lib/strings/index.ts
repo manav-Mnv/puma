@@ -6,6 +6,26 @@ export const strings = {
   common: {
     retry: 'Try again',
   },
+  display: {
+    open: 'Show check-in screen',
+    title: 'Scan to check in',
+    hint: 'Open your phone camera and scan. You must be registered.',
+    rotate: 'New code (if a photo was shared)',
+  },
+  selfCheckIn: {
+    title: 'Check in',
+    working: 'Connecting your node…',
+    ok: (t: string) => `✓ You’re checked in to ${t}`,
+    already: (t: string) => `✓ Already checked in to ${t}`,
+    toTickets: 'Go to my tickets',
+  },
+  inbox: {
+    open: (n: number) => (n ? `Notifications (${n} new)` : 'Notifications'),
+    title: 'Notifications',
+    empty: 'Nothing yet. Updates about your events appear here.',
+    markRead: 'Mark all as read',
+    important: 'Important',
+  },
   portal: {
     open: 'Manage portal',
     title: 'Manage',
@@ -270,6 +290,7 @@ export const strings = {
     request_not_pending: 'This request was already decided.',
     not_super_admin: 'Super Admin only.',
     not_parul_email: 'Use your @paruluniversity.ac.in email.',
+    invalid_checkin_code: 'This check-in QR is old or wrong. Scan the one on screen now.',
   },
 } as const;
 
