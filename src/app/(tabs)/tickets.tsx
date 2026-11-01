@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { ticketQrValue, useMyTickets, type Ticket } from '@/lib/api/tickets';
+import { formatEntryCode, ticketQrValue, useMyTickets, type Ticket } from '@/lib/api/tickets';
 import { formatEventDate, formatEventTimeRange } from '@/lib/datetime';
 import { errorMessage, strings } from '@/lib/strings';
 
@@ -33,8 +33,11 @@ function TicketCard({ ticket }: { ticket: Ticket }) {
         {strings.tickets.showAtEntry}
       </ThemedText>
       {/* Fallback when the organizer's camera can't scan: they type this code. */}
-      <ThemedText type="code" selectable accessibilityLabel={strings.tickets.codeLabel} testID="ticket-code">
-        {ticket.ticketCode}
+      <ThemedText type="small" themeColor="textSecondary">
+        {strings.tickets.codeLabel}
+      </ThemedText>
+      <ThemedText selectable accessibilityLabel={strings.tickets.codeLabel} testID="ticket-code" style={styles.entryCode}>
+        {formatEntryCode(ticket.entryCode)}
       </ThemedText>
     </ThemedView>
   );
@@ -112,6 +115,12 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     backgroundColor: '#FFFFFF',
     borderRadius: Spacing.two,
+  },
+  entryCode: {
+    fontSize: 28,
+    lineHeight: 34,
+    fontWeight: 700,
+    letterSpacing: 4,
   },
   center: {
     textAlign: 'center',

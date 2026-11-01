@@ -282,6 +282,7 @@ export type Database = {
           id: string
           status: Database["public"]["Enums"]["registration_status"]
           ticket_code: string
+          entry_code: string
           updated_at: string
           user_id: string
         }

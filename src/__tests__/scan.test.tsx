@@ -37,7 +37,7 @@ beforeEach(() => {
 });
 
 async function typeCode(code: string) {
-  await fireEvent.changeText(screen.getByLabelText('Or type the ticket code'), code);
+  await fireEvent.changeText(screen.getByLabelText('Or type the entry code'), code);
   await fireEvent.press(screen.getByRole('button', { name: 'Check in' }));
 }
 
@@ -60,7 +60,7 @@ describe('ScanScreen', () => {
     expect(screen.getByText('25UG030303 · Unverified')).toBeTruthy();
 
     await fireEvent.press(screen.getByRole('button', { name: 'Scan next' }));
-    expect(screen.getByLabelText('Or type the ticket code')).toBeTruthy();
+    expect(screen.getByLabelText('Or type the entry code')).toBeTruthy();
   });
 
   it('warns on a duplicate scan', async () => {
