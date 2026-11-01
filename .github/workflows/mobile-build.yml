@@ -30,10 +30,20 @@ jobs:
       - name: Link EAS project (creates it on first run)
         run: eas init --non-interactive --force
       - name: Build Android
+        run: eas build --platform android --profile "${{ inputs.profile }}" --non-interactive --wait --json > build.json
+      - name: Write download links to the summary
+        # Never fail a finished build over the summary: read fields defensively.
+        if: always() && hashFiles('build.json') != ''
         run: |
-          eas build --platform android --profile "${{ inputs.profile }}" --non-interactive --wait --json > build.json
-          url=$(node -e "const b=require('./build.json')[0]; console.log(b.artifacts?.buildUrl ?? '')")
-          page=$(node -e "const b=require('./build.json')[0]; console.log('https://expo.dev/accounts/'+b.project.ownerAccount.name+'/projects/'+b.project.slug+'/builds/'+b.id)")
-          echo "### Android build ready" >> "$GITHUB_STEP_SUMMARY"
-          echo "- APK / AAB: $url" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Build page (QR to install): $page" >> "$GITHUB_STEP_SUMMARY"
+          node -e "
+            const fs = require('fs');
+            let b = {};
+            try { const j = JSON.parse(fs.readFileSync('build.json', 'utf8')); b = Array.isArray(j) ? j[0] ?? {} : j; } catch {}
+            const owner = b.project?.ownerAccount?.name ?? b.accountName ?? 'mnvdev';
+            const slug = b.project?.slug ?? 'edge-parul';
+            const page = b.id ? 'https://expo.dev/accounts/' + owner + '/projects/' + slug + '/builds/' + b.id : 'https://expo.dev/accounts/' + owner + '/projects/' + slug + '/builds';
+            const lines = ['### Android build (' + (b.status ?? 'see page') + ')', '- Build page (QR to install): ' + page];
+            if (b.artifacts?.buildUrl) lines.push('- Download APK / AAB: ' + b.artifacts.buildUrl);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+            console.log(lines.join('\n'));
+          "
