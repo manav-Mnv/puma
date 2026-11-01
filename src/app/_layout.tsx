@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { Observe, ObserveRoot, useObserve } from 'expo-observe';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
@@ -14,18 +15,26 @@ import { errorMessage, strings } from '@/lib/strings';
 
 SplashScreen.preventAutoHideAsync();
 
+// EAS Observe: startup + per-route timings. Never export the secret projector
+// check-in code (?c=) or certificate serials in route params.
+Observe.configure({ integrations: { 'expo-router': { filteredParams: ['c', 'serial'] } } });
+
 function RootNavigator() {
   const { session, isLoading } = useSession();
   const profile = useMyProfile();
   const signOut = useSignOut();
   const profileLoading = !!session && profile.isPending;
+  const { markInteractive } = useObserve();
   const onboarded = !!profile.data?.onboarded_at;
   usePendingLink(!isLoading && !profileLoading && !!session && onboarded, !!session);
   usePushNotifications(!!session && onboarded);
 
   useEffect(() => {
-    if (!isLoading && !profileLoading) SplashScreen.hideAsync();
-  }, [isLoading, profileLoading]);
+    if (isLoading || profileLoading) return;
+    SplashScreen.hideAsync();
+    // Session + profile resolved: the first real screen (sign-in, onboarding or tabs) is usable.
+    markInteractive();
+  }, [isLoading, profileLoading, markInteractive]);
 
   if (isLoading || profileLoading) return <StatusScreen message={strings.signIn.loading} />;
   if (session && profile.error) {
@@ -69,7 +78,7 @@ function RootNavigator() {
   );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   const colorScheme = useColorScheme();
   const [queryClient] = useState(() => new QueryClient());
 
@@ -83,3 +92,5 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 }
+
+export default ObserveRoot.wrap(RootLayout);
