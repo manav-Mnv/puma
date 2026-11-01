@@ -43,11 +43,11 @@ select is((select count(*)::int from public.review_queue()), 1, 'AD sees the pen
 select throws_ok($$ select public.decide_request('club', (select id from public.clubs limit 1), false, '') $$,
   '22023', 'remarks_required', 'Rejecting needs remarks');
 select lives_ok($$ select public.decide_request('club', (select id from public.clubs limit 1), true) $$, 'AD approves the club');
-select is((select role::text from public.profiles where id = '00000000-0000-0000-0000-0000000000b1'), 'club_lead',
-  'Requester becomes Club Lead');
 
 -- Club Lead submits an event → pending, unverified
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}';
+select is((select role::text from public.profiles where id = '00000000-0000-0000-0000-0000000000b1'), 'club_lead',
+  'Requester becomes Club Lead');
 select is((public.create_event(jsonb_build_object('title','Swift Meetup','venue','Lab 1',
   'starts_at', now() + interval '1 day', 'ends_at', now() + interval '1 day 2 hours',
   'club_id', (select id from public.clubs limit 1)))).status::text, 'pending', 'Club event waits for approval');
