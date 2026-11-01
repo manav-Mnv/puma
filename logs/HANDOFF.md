@@ -1,23 +1,23 @@
 # HANDOFF: resume point (overwrite at every stop)
 
-**Updated:** 2026-11-01 · **By:** Claude (Manager) · **Phase:** MVP feature-complete (Days 1–10) → pilot prep
+**Updated:** 2026-11-01 · **By:** Claude (Manager) · **Phase:** MVP + pre-pilot gaps closed → pilot
 
 ## State (main)
-- **Students:** sign-up (Parul email → Verified; enrollment no. or temporary ID → Unverified), 3-step profile, Explore + register, Tickets (offline QR + code), Mode B self check-in, certificates (PDF + public verify), Clubs (join/leave/request), Inbox, Get verified (link Parul email → temp ID replaced by enrollment no.).
-- **Manage portal** (`/manage`) for Faculty / Club Lead / AD / Admin: create event, my events (status + remarks), scanner (Mode A), projector QR (Mode B), mark complete, approval queue (AD/Admin, 2-day overdue), roles. **Super Admin console** (`/super`): platform stats; only Super Admin creates Admins.
-- **Web:** installable PWA (manifest, Add to Home Screen guide). Live at https://edge-parul.manavbarad978.workers.dev (auto-deploys from main).
-- **CI on every PR:** app (tsc, lint, Jest 33), db (pgTAP 001–008), e2e (Playwright golden path). Workflows: deploy, db-deploy (manual, Party A), backup (weekly, encrypted), keepalive (daily), mobile-build (APK).
-- **APK:** first EAS build started 2026-11-01 (Actions → mobile-build, run 41280498341). The download link is in the run summary / expo.dev.
+- **Students:** sign up (Parul email → Verified; enrollment no. or temp ID → Unverified), 3-step profile, Explore/register, Tickets (offline QR + code), self check-in from the projector QR (survives sign-in), certificates (PDF + public verify), Clubs, Inbox (+ 2h reminders), Get verified (Parul email link → temp ID becomes enrollment no.).
+- **Staff:** "Faculty / Staff" onboarding (MIS ID + designation). Manage portal: create/edit/cancel events, scanner, projector QR, mark complete, CSV attendance, approval queue (AD/Admin), roles. Super Admin console.
+- **Web** (PWA) auto-deploys from main: https://edge-parul.manavbarad978.workers.dev. **APK**: Actions → mobile-build (latest: expo.dev build 00728134…).
+- **CI on every PR:** app (tsc, lint, Jest 36), db (pgTAP 001–009), e2e (Playwright golden path).
 
 ## Party A must do
-1. **Run db-deploy.** It applies migrations 0003 (profile backfill), 0004 (enrollment nos.), 0005/clubs portal, and 0006 self check-in + inbox to edge-prod. Until then the live site lacks those features.
-2. Make yourself super_admin: `update public.profiles set role='super_admin' where parul_email='…';`
-3. Supabase Auth → Emails: add a free SMTP sender (Resend/Brevo) before the pilot. The built-in sender is rate-limited, and Get verified sends confirmation emails.
-4. Pilot with Swift Coding Club; collect feedback.
+1. **Run db-deploy.** It applies every migration after `certificates` (profile backfill, enrollment IDs, clubs/portal, self check-in/inbox, pre-pilot) to edge-prod.
+2. Make yourself super_admin (SQL), then promote faculty/ADs in Manage → Roles.
+3. Supabase Auth → Emails: free SMTP (Resend/Brevo) before the pilot.
+4. Publish GitHub release v0.9.0. Drive: hemntomn → Viewer. Roll the Cloudflare token if the screenshot one was real.
+5. Real institute/course list (D3).
 
-## Next (post-MVP backlog)
-- Push to phones (Expo Push + FCM credentials via `eas credentials`; the inbox is already the source).
-- Faculty/AD onboarding fields (MIS ID, designation) instead of the student form.
-- AD department scoping (departments table is empty), real institute/course list (D3).
-- Self check-in for signed-out scanners (keep the deep link through sign-in).
-- CSV export (T10), k6 load test for Mode B (T13), iOS App Store (R3).
+## Next (backlog)
+- Push to phones (Expo Push + FCM via `eas credentials`; the inbox is the source).
+- AD department scoping (needs departments seeded).
+- k6 load test for Mode B, Sentry wiring, accessibility pass, backup restore drill.
+- Play Console closed testing (12 testers × 14 days), Apple when funded.
+- Update `supabase/setup-cli` when a Node 24 release ships.
