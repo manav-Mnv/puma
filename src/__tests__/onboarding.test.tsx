@@ -27,7 +27,7 @@ describe('OnboardingScreen', () => {
   it('blocks step 1 until the student ID is valid', async () => {
     await render(<OnboardingScreen />);
     await fireEvent.changeText(screen.getByLabelText('Enrollment / student ID'), 'UG25');
-    expect(screen.getByText('Enter your student ID like 25UG030303.')).toBeTruthy();
+    expect(screen.getByText(/Enter your enrollment number/)).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
 
     await fireEvent.changeText(screen.getByLabelText('Enrollment / student ID'), '25ug030303');
