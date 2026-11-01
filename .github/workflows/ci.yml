@@ -58,7 +58,7 @@ jobs:
           cache: npm
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.121.0
       - name: Start local Supabase (db, auth, rest)
         run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector
       - name: Point the web build at local Supabase
