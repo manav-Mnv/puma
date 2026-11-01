@@ -18,6 +18,7 @@ A Luma-style event platform for **Parul University**: discover events, register 
 | 07 | [Agent Playbook](docs/07_AGENT_PLAYBOOK.md) | Multi-agent loop, gates, logging, token-out recovery |
 | 08 | [CI/CD & Repo](docs/08_CICD_AND_REPO.md) | Pipelines, environments, secrets, release flow |
 | 09 | [Setup Guide](docs/09_SETUP_GUIDE.md) | Day 0: accounts, software, keys, GitHub secrets (fact-checked) |
+| 11 | [Frontend Guide](docs/11_FRONTEND_GUIDE.md) | For UI contributors: clone, run (web + Android emulator), folders, platform-specific UI, rules, PR checklist |
 | — | [archive/](docs/archive) | Original v2.0 PRD and SRS |
 
 ## Logs (the project's memory)
