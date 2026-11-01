@@ -1,18 +1,23 @@
 # HANDOFF: resume point (overwrite at every stop)
 
-**Updated:** 2026-11-01 · **By:** Claude (Manager) · **Phase:** Day 6 nearly done → R1 release pending Party A checks
+**Updated:** 2026-11-01 · **By:** Claude (Manager) · **Phase:** MVP feature-complete (Days 1–10) → pilot prep
 
-## State
-- **main**: Days 1–5 plus the golden-path E2E (#10). CI runs app + db + **e2e** (Playwright against local Supabase) on every PR, and all are green.
-- Live web deploys from main automatically (Cloudflare Worker `edge-parul`, Wrangler 4 + Workers token).
-- edge-prod migrations: identity, events, checkin, certificates. **Pending:** `20261101000003_profile_backfill` (from #11). It fixes the blank screen: the 2 Google accounts created before the identity migration had no profile.
-- #12 (actions v5, `preview_urls: false`) is set to auto-merge.
+## State (main)
+- **Students:** sign-up (Parul email → Verified; enrollment no. or temporary ID → Unverified), 3-step profile, Explore + register, Tickets (offline QR + code), Mode B self check-in, certificates (PDF + public verify), Clubs (join/leave/request), Inbox, Get verified (link Parul email → temp ID replaced by enrollment no.).
+- **Manage portal** (`/manage`) for Faculty / Club Lead / AD / Admin: create event, my events (status + remarks), scanner (Mode A), projector QR (Mode B), mark complete, approval queue (AD/Admin, 2-day overdue), roles. **Super Admin console** (`/super`): platform stats; only Super Admin creates Admins.
+- **Web:** installable PWA (manifest, Add to Home Screen guide). Live at https://edge-parul.manavbarad978.workers.dev (auto-deploys from main).
+- **CI on every PR:** app (tsc, lint, Jest 33), db (pgTAP 001–008), e2e (Playwright golden path). Workflows: deploy, db-deploy (manual, Party A), backup (weekly, encrypted), keepalive (daily), mobile-build (APK).
+- **APK:** first EAS build started 2026-11-01 (Actions → mobile-build, run 41280498341). The download link is in the run summary / expo.dev.
 
-## Next (in order)
-1. **Party A: run db-deploy** (Actions → db-deploy → Run workflow) to apply the profile backfill. Then sign in on the live site: you should land on onboarding (or the tabs) instead of a blank page.
-2. Party A: make yourself super_admin (SQL in Supabase), then run the live flow once on a phone (Expo Go) and the web.
-3. Tag **v0.1.0** (R1) when step 2 passes. Run **mobile-build** for the Android APK.
-4. Day 7 (R2): Clubs + Club Lead event requests + AD approval queue. Also: faculty/AD onboarding (MIS ID, designation) instead of the student form.
+## Party A must do
+1. **Run db-deploy.** It applies migrations 0003 (profile backfill), 0004 (enrollment nos.), 0005/clubs portal, and 0006 self check-in + inbox to edge-prod. Until then the live site lacks those features.
+2. Make yourself super_admin: `update public.profiles set role='super_admin' where parul_email='…';`
+3. Supabase Auth → Emails: add a free SMTP sender (Resend/Brevo) before the pilot. The built-in sender is rate-limited, and Get verified sends confirmation emails.
+4. Pilot with Swift Coding Club; collect feedback.
 
-## Open questions
-Real institute/course list. Program codes beyond UG/PG.
+## Next (post-MVP backlog)
+- Push to phones (Expo Push + FCM credentials via `eas credentials`; the inbox is already the source).
+- Faculty/AD onboarding fields (MIS ID, designation) instead of the student form.
+- AD department scoping (departments table is empty), real institute/course list (D3).
+- Self check-in for signed-out scanners (keep the deep link through sign-in).
+- CSV export (T10), k6 load test for Mode B (T13), iOS App Store (R3).

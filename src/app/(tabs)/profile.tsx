@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
@@ -75,6 +75,13 @@ export default function ProfileScreen() {
             <Button label={strings.certificate.myCertificates} variant="secondary" onPress={() => router.push('/certificates')} />
             <Button label={strings.clubs.open} variant="secondary" onPress={() => router.push('/clubs')} />
             {data?.verification_status === 'unverified' ? <LinkParulEmail /> : null}
+            {Platform.OS === 'web' ? (
+              <Card>
+                <ThemedText type="smallBold">{strings.install.title}</ThemedText>
+                <ThemedText type="small">{strings.install.iphone}</ThemedText>
+                <ThemedText type="small">{strings.install.android}</ThemedText>
+              </Card>
+            ) : null}
             <Button
               label={strings.profile.signOut}
               variant="secondary"
