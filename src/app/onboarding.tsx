@@ -41,11 +41,14 @@ type Form = {
   course: string;
   year: number | null;
   semester: number | null;
-  residence: OnboardingInput['residence'] | null;
+  residence: NonNullable<OnboardingInput['residence']> | null;
   gender: OnboardingInput['gender'] | null;
   phone: string;
   personal_email: string;
   consent: boolean;
+  kind: 'student' | 'staff';
+  staff_mis_id: string;
+  designation: string;
 };
 
 export default function OnboardingScreen() {
@@ -66,6 +69,9 @@ export default function OnboardingScreen() {
     phone: '',
     personal_email: '',
     consent: false,
+    kind: 'student',
+    staff_mis_id: '',
+    designation: '',
   });
 
   const set = <K extends keyof Form>(key: K, value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
@@ -74,23 +80,41 @@ export default function OnboardingScreen() {
   const isUnverified = profile.data?.verification_status === 'unverified';
   const selectedInstitute = institutes.data?.find((i) => i.id === form.institute_id);
 
-  const idError = form.student_id ? validateStudentId(form.student_id) : null;
+  const isStaff = form.kind === 'staff';
+  // Only verified Parul accounts can fill the staff form (the DB enforces it too).
+  const canBeStaff = profile.data?.verification_status === 'verified';
+  const idError = !isStaff && form.student_id ? validateStudentId(form.student_id) : null;
   const stepValid =
     step === 1
-      ? fullName.trim().length > 1 && !!form.student_id && !idError
+      ? fullName.trim().length > 1 &&
+        (isStaff ? /^[A-Za-z0-9/-]{2,30}$/.test(form.staff_mis_id.trim()) : !!form.student_id && !idError)
       : step === 2
         ? !!form.institute_id &&
           (!selectedInstitute?.is_other || !!form.institute_other.trim()) &&
-          !!form.course.trim() &&
-          !!form.year &&
-          !!form.semester &&
-          !!form.residence
+          (isStaff
+            ? form.designation.trim().length >= 2
+            : !!form.course.trim() && !!form.year && !!form.semester && !!form.residence)
         : !!form.gender &&
           isValidPhone(form.phone) &&
           (!needsPersonalEmail || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.personal_email.trim())) &&
           form.consent;
 
   function submit() {
+    if (isStaff) {
+      complete.mutate({
+        kind: 'staff',
+        full_name: fullName.trim(),
+        staff_mis_id: form.staff_mis_id.trim(),
+        designation: form.designation.trim(),
+        institute_id: form.institute_id!,
+        institute_other: selectedInstitute?.is_other ? form.institute_other.trim() : undefined,
+        gender: form.gender!,
+        phone: form.phone,
+        personal_email: needsPersonalEmail ? form.personal_email.trim() : undefined,
+        consent: form.consent,
+      });
+      return;
+    }
     complete.mutate({
       full_name: fullName.trim(),
       student_id: normalizeStudentId(form.student_id),
@@ -128,14 +152,35 @@ export default function OnboardingScreen() {
                     onChangeText={(v) => set('full_name', v)}
                     autoComplete="name"
                   />
-                  <TextField
-                    label={t.studentId}
-                    placeholder={t.studentIdHint}
-                    value={form.student_id}
-                    onChangeText={(v) => set('student_id', v)}
-                    autoCapitalize="characters"
-                    autoCorrect={false}
-                  />
+                  {canBeStaff ? (
+                    <ChipGroup
+                      label={t.iAm}
+                      options={[
+                        { value: 'student', label: t.student },
+                        { value: 'staff', label: t.staff },
+                      ]}
+                      value={form.kind}
+                      onChange={(v) => set('kind', v as Form['kind'])}
+                    />
+                  ) : null}
+                  {isStaff ? (
+                    <TextField
+                      label={t.misId}
+                      value={form.staff_mis_id}
+                      onChangeText={(v) => set('staff_mis_id', v)}
+                      autoCapitalize="characters"
+                      autoCorrect={false}
+                    />
+                  ) : (
+                    <TextField
+                      label={t.studentId}
+                      placeholder={t.studentIdHint}
+                      value={form.student_id}
+                      onChangeText={(v) => set('student_id', v)}
+                      autoCapitalize="characters"
+                      autoCorrect={false}
+                    />
+                  )}
                   {idError ? <ThemedText style={styles.error}>{strings.errors[idError]}</ThemedText> : null}
                 </>
               ) : null}
@@ -158,25 +203,36 @@ export default function OnboardingScreen() {
                       onChangeText={(v) => set('institute_other', v)}
                     />
                   ) : null}
-                  <TextField
-                    label={t.course}
-                    placeholder={t.coursePlaceholder}
-                    value={form.course}
-                    onChangeText={(v) => set('course', v)}
-                  />
-                  <ChipGroup label={t.year} options={YEARS} value={form.year} onChange={(v) => set('year', v)} />
-                  <ChipGroup
-                    label={t.semester}
-                    options={SEMESTERS}
-                    value={form.semester}
-                    onChange={(v) => set('semester', v)}
-                  />
-                  <ChipGroup
-                    label={t.residence}
-                    options={RESIDENCES}
-                    value={form.residence}
-                    onChange={(v) => set('residence', v)}
-                  />
+                  {isStaff ? (
+                    <TextField
+                      label={t.designation}
+                      placeholder={t.designationPlaceholder}
+                      value={form.designation}
+                      onChangeText={(v) => set('designation', v)}
+                    />
+                  ) : (
+                    <>
+                      <TextField
+                        label={t.course}
+                        placeholder={t.coursePlaceholder}
+                        value={form.course}
+                        onChangeText={(v) => set('course', v)}
+                      />
+                      <ChipGroup label={t.year} options={YEARS} value={form.year} onChange={(v) => set('year', v)} />
+                      <ChipGroup
+                        label={t.semester}
+                        options={SEMESTERS}
+                        value={form.semester}
+                        onChange={(v) => set('semester', v)}
+                      />
+                      <ChipGroup
+                        label={t.residence}
+                        options={RESIDENCES}
+                        value={form.residence}
+                        onChange={(v) => set('residence', v)}
+                      />
+                    </>
+                  )}
                 </>
               ) : null}
 
@@ -204,7 +260,7 @@ export default function OnboardingScreen() {
                       inputMode="email"
                     />
                   ) : null}
-                  <ThemedText type="small">{t.confirmId(normalizeStudentId(form.student_id))}</ThemedText>
+                  <ThemedText type="small">{isStaff ? t.confirmMis(form.staff_mis_id.trim().toUpperCase()) : t.confirmId(normalizeStudentId(form.student_id))}</ThemedText>
                   {isUnverified ? (
                     <ThemedText type="small" themeColor="textSecondary">
                       {t.unverifiedNote}

@@ -119,6 +119,9 @@ export type Database = {
           updated_at: string
           verification_status: Database["public"]["Enums"]["verification_status"]
           year: number | null
+          is_staff: boolean
+          staff_mis_id: string | null
+          designation: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -323,6 +326,22 @@ export type Database = {
       get_checkin_code: { Args: { p_event_id: string; p_rotate?: boolean }; Returns: string }
       self_check_in: { Args: { p_event_id: string; p_code: string }; Returns: Json }
       mark_notifications_read: { Args: never; Returns: undefined }
+      update_event: { Args: { p_event_id: string; p: Json }; Returns: Database["public"]["Tables"]["events"]["Row"] }
+      cancel_event: { Args: { p_event_id: string }; Returns: undefined }
+      event_roster: {
+        Args: { p_event_id: string }
+        Returns: {
+          full_name: string | null
+          student_id: string | null
+          parul_email: string | null
+          verification_status: string
+          course: string | null
+          year: number | null
+          registered_at: string
+          checked_in_at: string | null
+          check_in_mode: string | null
+        }[]
+      }
       request_club: { Args: { p_name: string; p_description: string }; Returns: Database["public"]["Tables"]["clubs"]["Row"] }
       join_club: { Args: { p_club_id: string }; Returns: undefined }
       leave_club: { Args: { p_club_id: string }; Returns: undefined }
