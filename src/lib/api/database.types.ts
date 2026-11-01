@@ -219,6 +219,30 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      clubs: {
+        Row: {
+          advisor_id: string | null
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          department_id: number | null
+          description: string
+          id: string
+          lead_id: string
+          name: string
+          remarks: string | null
+          status: Database["public"]["Enums"]["club_status"]
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      club_members: {
+        Row: { club_id: string; joined_at: string; user_id: string }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       certificates: {
         Row: {
           attendance_id: string
@@ -273,11 +297,35 @@ export type Database = {
           status: Database["public"]["Enums"]["event_status"] | null
           title: string | null
           venue: string | null
+          club_id: string | null
+          remarks: string | null
         }
         Relationships: []
       }
     }
     Functions: {
+      request_club: { Args: { p_name: string; p_description: string }; Returns: Database["public"]["Tables"]["clubs"]["Row"] }
+      join_club: { Args: { p_club_id: string }; Returns: undefined }
+      leave_club: { Args: { p_club_id: string }; Returns: undefined }
+      club_member_count: { Args: { p_club_id: string }; Returns: number }
+      is_reviewer: { Args: never; Returns: boolean }
+      review_queue: {
+        Args: never
+        Returns: {
+          kind: string
+          id: string
+          title: string
+          detail: string
+          requester_name: string | null
+          created_at: string
+          overdue: boolean
+        }[]
+      }
+      decide_request: {
+        Args: { p_kind: string; p_id: string; p_approve: boolean; p_remarks?: string }
+        Returns: undefined
+      }
+      platform_stats: { Args: never; Returns: Json }
       admin_find_profiles: {
         Args: { p_query: string }
         Returns: {
@@ -366,6 +414,7 @@ export type Database = {
         | "admin"
         | "super_admin"
       attendance_mode: "scan" | "self" | "manual"
+      club_status: "pending" | "approved" | "rejected" | "archived"
       event_status:
         | "draft"
         | "pending"

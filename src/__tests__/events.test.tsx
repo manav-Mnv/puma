@@ -41,6 +41,8 @@ jest.mock('@/lib/api/tickets', () => ({
   useIsEventOrganizer: () => ({ data: mockIsOrganizer }),
 }));
 
+jest.mock('@/lib/api/portal', () => ({ useMyApprovedClubs: () => [] }));
+
 const mockComplete = jest.fn();
 jest.mock('@/lib/api/certificates', () => ({
   useCompleteEvent: () => ({ mutate: mockComplete, isPending: false, data: undefined, error: null }),

@@ -45,6 +45,9 @@ function RootNavigator() {
         <Stack.Screen name="admin/roles" />
         <Stack.Screen name="certificates/index" />
         <Stack.Screen name="certificates/[serial]" />
+        <Stack.Screen name="manage/index" />
+        <Stack.Screen name="super" />
+        <Stack.Screen name="clubs" />
       </Stack.Protected>
       <Stack.Protected guard={!!session && !onboarded}>
         <Stack.Screen name="onboarding" />

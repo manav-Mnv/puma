@@ -14,6 +14,7 @@ export type CreateEventInput = {
   venue: string;
   starts_at: string;
   ends_at: string;
+  club_id?: string;
 };
 
 const EVENT_CREATOR_ROLES = ['faculty', 'ad', 'admin', 'super_admin'] as const;
