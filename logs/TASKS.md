@@ -19,12 +19,12 @@ Columns: **Backlog → Ready → In progress → Review → Verified → Done**.
 | T05 | A+B | Browse/search + register | R1 | Done (merged via #7) | 1-tap register, idempotent, needs complete profile |
 | T06 | B | Ticket QR, offline cache | R1 | Done (merged #7) | QR shows in airplane mode after first load |
 | T07 | A+B | Mode A scan (RPC A, UI B) | R1 | Done (merged #7) | ✅ name + Unverified tag. Second scan says "already". Wrong event rejected. |
-| T08 | A | Complete → certificates | R1 | Review (Day 5 PR) | One cert per attendee. Second complete makes no duplicates. |
-| T09 | B | Certificate view/PDF + /verify page | R1 | Review (Day 5 PR) | PDF on web + Android. Verify page shows minimal data. |
+| T08 | A | Complete → certificates | R1 | Done (#9) | One cert per attendee. Second complete makes no duplicates. |
+| T09 | B | Certificate view/PDF + /verify page | R1 | Done (#9) | PDF on web + Android. Verify page shows minimal data. |
 | T10 | B | CSV export Edge Function + button | R1 | Backlog | Organizer/AD only. Verified/Unverified column. |
 | T16 | B | Keep-alive + weekly backup Actions | R1 | Done (merged via #7) | Both workflows green. Restore drill done (Day 9). |
 | T18 | B | Seed institutes / courses / departments | R1 | In progress (placeholder list in PR #1, real list = D3) | Dropdowns populated, plus "Other" |
-| T19 | B | Release R1: website prod + Android APK + Sentry | R1 | Backlog | Prod URL + APK link live |
+| T19 | B | Release R1: website prod + Android APK + Sentry | R1 | In progress (web live, E2E green #10; APK + tag pending) | Prod URL + APK link live |
 | T11 | A+B | Clubs + Club Lead event requests | R2 | Backlog | Request → pending with status chip |
 | T12 | A+B | AD approval queue | R2 | Backlog | Approve/reject with remarks. Event becomes verified. |
 | T13 | A+B | Mode B self check-in (RPC A, UI B) + k6 (B) | R2 | Backlog | p95 < 1.5 s @ 1,000/60 s, 0 duplicates |

@@ -79,3 +79,10 @@ Format: see docs/07_AGENT_PLAYBOOK.md §3.1. Newest entries at the bottom.
 - **Evidence:** deploy log "Missing entry-point" (run on main). Day 5 local: tsc exit 0, lint clean, jest 26 passed, web export 18 routes.
 - **Next:** #8 → db-deploy → Day 5 merge → db-deploy
 - **Manager verdict:** pending CI
+
+### [2026-11-01] Manager (Claude) · Day 6 · blank-screen fix, E2E, CI polish
+- **Status:** DONE (pending Party A db-deploy)
+- **Did:** Root cause of the blank page: 2 auth users predate the identity migration, so they had no profile, and the app rendered nothing during retries. #11 adds the backfill + self-healing onboarding + loading/error screens, and pins the Supabase CLI (setup-cli `latest` hit the rate limit). #10: Playwright golden-path E2E in CI. #12: actions v5, preview_urls off.
+- **Evidence:** SQL: auth_users=2, profiles=0, users created 12:07/12:08 on 31 Oct. #11 CI ✅. #10 CI app ✅ db ✅ **e2e ✅** (first run). Jest 27/27.
+- **Next:** Party A runs db-deploy, then tag v0.1.0
+- **Manager verdict:** VERIFIED (CI evidence)
