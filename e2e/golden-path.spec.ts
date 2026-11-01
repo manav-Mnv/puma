@@ -111,12 +111,12 @@ test('golden path: register → check-in → certificate → verify', async ({ b
 
   await student.goto('/tickets');
   const ticketCode = (await student.getByTestId('ticket-code').innerText()).trim();
-  expect(ticketCode).toMatch(/^[0-9a-f]{32}$/);
+  expect(ticketCode).toMatch(/^[2-9A-HJKMNP-Z]{3}-[2-9A-HJKMNP-Z]{3}$/); // short entry code
 
   // 4. Organizer checks the student in (manual code: no camera in CI).
   await organizer.goto(eventUrl);
   await organizer.getByRole('button', { name: 'Scan tickets' }).click();
-  await organizer.getByLabel('Or type the ticket code').fill(ticketCode);
+  await organizer.getByLabel('Or type the entry code').fill(ticketCode);
   await organizer.getByRole('button', { name: 'Check in' }).click();
   await expect(organizer.getByText('✓ Checked in')).toBeVisible();
   await expect(organizer.getByText('Ravi Shah')).toBeVisible();
@@ -124,7 +124,7 @@ test('golden path: register → check-in → certificate → verify', async ({ b
 
   // Duplicate scan never creates a second attendance.
   await organizer.getByRole('button', { name: 'Scan next' }).click();
-  await organizer.getByLabel('Or type the ticket code').fill(ticketCode);
+  await organizer.getByLabel('Or type the entry code').fill(ticketCode);
   await organizer.getByRole('button', { name: 'Check in' }).click();
   await expect(organizer.getByText('⚠ Already checked in')).toBeVisible();
 

@@ -192,7 +192,7 @@ export const strings = {
     offline: 'Offline: showing your saved tickets.',
     showAtEntry: 'Show this QR at the entrance',
     checkedIn: '✓ Checked in',
-    codeLabel: 'Ticket code',
+    codeLabel: 'Entry code',
     qrLabel: (title: string) => `Ticket QR code for ${title}`,
   },
   scan: {
@@ -207,7 +207,7 @@ export const strings = {
     unverifiedTag: 'Unverified',
     next: 'Scan next',
     notTicket: 'That QR isn’t an EDGE ticket.',
-    manualLabel: 'Or type the ticket code',
+    manualLabel: 'Or type the entry code',
     manualSubmit: 'Check in',
   },
   certificate: {

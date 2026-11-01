@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 export type Ticket = {
   registrationId: string;
   ticketCode: string;
+  entryCode: string;
   checkedInAt: string | null;
   event: FeedEvent;
 };
@@ -20,6 +21,11 @@ export type ScanResult = {
   avatar_url: string | null;
 };
 
+/** Short entry code for people: K7P4QX → "K7P-4QX". */
+export function formatEntryCode(code: string | undefined) {
+  return code ? `${code.slice(0, 3)}-${code.slice(3)}` : '';
+}
+
 /** QR payload. The prefix lets the scanner ignore unrelated QR codes. */
 export function ticketQrValue(ticketCode: string) {
   return `edge:ticket:${ticketCode}`;
@@ -30,7 +36,7 @@ const cacheKey = (userId: string) => `edge.tickets.${userId}`;
 async function fetchTickets(): Promise<Ticket[]> {
   const { data: registrations, error } = await supabase
     .from('registrations')
-    .select('id, event_id, ticket_code')
+    .select('id, event_id, ticket_code, entry_code')
     .eq('status', 'registered');
   if (error) throw error;
   if (!registrations.length) return [];
@@ -49,6 +55,7 @@ async function fetchTickets(): Promise<Ticket[]> {
     .map((r) => ({
       registrationId: r.id,
       ticketCode: r.ticket_code,
+      entryCode: r.entry_code,
       checkedInAt: attendance.data.find((a) => a.registration_id === r.id)?.checked_in_at ?? null,
       event: events.data.find((e) => e.id === r.event_id)!,
     }))
