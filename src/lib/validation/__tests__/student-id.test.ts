@@ -9,6 +9,13 @@ describe('student ID', () => {
     expect(validateStudentId('26DIP00123', oct2026)).toBeNull();
   });
 
+  it('accepts the permanent all-digit enrollment number', () => {
+    expect(validateStudentId('2503031461401', oct2026)).toBeNull();
+    expect(validateStudentId(' 2503 0314 61401 ', oct2026)).toBeNull();
+    expect(validateStudentId('250303146', oct2026)).toBe('invalid_student_id'); // too short
+    expect(validateStudentId('2703031461401', oct2026)).toBe('invalid_student_id_year');
+  });
+
   it('normalises spaces and case', () => {
     expect(normalizeStudentId(' 25ug 030303 ')).toBe('25UG030303');
     expect(validateStudentId(' 25ug030303 ', oct2026)).toBeNull();

@@ -34,7 +34,7 @@ export const strings = {
     contactTitle: 'Contact & consent',
     fullName: 'Full name',
     studentId: 'Enrollment / student ID',
-    studentIdHint: 'Like 25UG030303',
+    studentIdHint: 'Enrollment no. (2503031461401) or temporary ID (25UG030303)',
     institute: 'Institute',
     instituteOther: 'Institute name',
     course: 'Course / program',
@@ -167,7 +167,7 @@ export const strings = {
   errors: {
     generic: 'Something went wrong. Please try again.',
     not_authenticated: 'Please sign in again.',
-    invalid_student_id: 'Enter your student ID like 25UG030303.',
+    invalid_student_id: 'Enter your enrollment number (like 2503031461401) or temporary ID (like 25UG030303).',
     invalid_student_id_year: 'The year at the start of your student ID looks wrong.',
     invalid_phone: 'Enter a 10-digit Indian mobile number.',
     invalid_personal_email: 'Enter a valid personal email.',
